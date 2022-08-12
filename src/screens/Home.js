@@ -1,31 +1,29 @@
-import React, {useEffect, useState, useContext} from "react";
-import { StyleSheet, Text, View, Button, Image,TextInput } from "react-native";
+import React, {useEffect, useState, useContext, ScrollView} from "react";
+import { StyleSheet, Text, View, Button, Image,TextInput, SafeAreaView, FlatList } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { withSafeAreaInsets } from "react-native-safe-area-context";
 import TokenContext from "../context/AuthContext";
 
 //https://pbs.twimg.com/media/EtMyremWQAEcl08.jpg
-const IP = "192.168.0.130"; 
+const IP = "10.152.2.140"; 
 const Home= (props) => {
 
 const {token} = useContext(TokenContext);
 const [publicacion, setPublicacion] = useState([]);
 const [usuario, setUsuario] = useState([]);
-// const [cantLikes, setCantLikes] = useState([]);
-// const [cantDislikes, setCantDislikes] = useState([]);
-// const [comentarios, setComentarios] = useState([]);
+const [cantLikes, setCantLikes] = useState([]);
+const [cantDislikes, setCantDislikes] = useState([]);
+const [comentarios, setComentarios] = useState([]);
+
 
 useEffect(() => {
     obtenerPublicacion();
-    // obtenerUsuario(publicacion.fkUser);//fkuser
-    // obtenerDislikes(publicacion.Id);//publication.id
-    // obtenerLikes(publicacion.Id);//publication.id
-    // obtenerComentarios(publicacion.Id);//publication.id
+    obtenerUsuario(publicacion[0].fkUser)
   },[]);
   
   const obtenerPublicacion = () => {
-    axios.get(`http://192.168.0.130:4000/publicaciones`,{
+    axios.get(`http://${IP}:4000/publicaciones`,{
       headers: {
         'authorization': `Bearer ${token}`
       }
@@ -33,20 +31,18 @@ useEffect(() => {
     .then(res => {
       console.log('respuesta: ', res.data);
       setPublicacion(res.data)
-      console.log('publicacion',publicacion);
     })
     .catch(err => console.log(err));
   }
 
-  const obtenerUsuario = (fkUser) => {
-    axios.get(`http://${IP}:4000/usuarios/${fkUser}`,{
+  const obtenerUsuario = (publicacion) => {
+    axios.get(`http://${IP}:4000/usuarios/${publicacion}`,{
       headers: {
         'authorization': `Bearer ${token}`
       }
     })
     .then(res => {
-      console.log('respuesta: ',res.data)
-      setUsuario(res.data);
+      setUsuario(res.data)
     })
     .catch(err => console.log(err));
   }
@@ -92,150 +88,60 @@ useEffect(() => {
     .catch(err => console.log(err));
   }
   
-  // console.log('dislikes: ', cantDislikes)
-  // console.log('likes: ', cantLikes)
-  // console.log("resultado de la petición ",publicacion);
-  // console.log(publicacion);
-  // console.log(publicacion[1]);
-  // console.log('foto de perfil: ', usuario.profilePicture)
-  
-  console.log('usuario afuera del map:  ', usuario)
+  console.log('usuario',usuario)
+
   return (
+
     <>
-        {
-           
-        }
-            {/* <View style={styles.cuadrado}>
-            <Ionicons name="ellipsis-vertical" color="#fff" size={35} style={{padding:7}}/>
-            <View style={{flexDirection:"row"}}>
-            <Ionicons name="funnel" color="#fff" size={35} style={{padding:7, paddingRight:"5%", marginTop:5 }}/>
-            <Ionicons name="notifications" color="#fff" size={35} style={{padding:7, paddingRight:"10%", marginTop:5 }}/>
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={publicacion}
+          renderItem={({item})=>
+            <View>
+              <Text>{item.name}</Text>
+              <Text>{item.usuario}</Text>
+              <Image source={{uri: `${item.image}`}} style={{width: 160, height: 150}}/>
             </View>
-           </View>
+          }
+          keyExtractor={publicacion => publicacion.Id}
+        />
+      </SafeAreaView>
 
-
-        <View style={styles.container}>
-          <ScrollView>
-
-          <View style={{flexDirection:"row", padding: 10}}>
-          <Image style={styles.profilePic} source={{uri:`${usuario.profilePicture}`}}/>
-          <View style= {{flexDirection:"column"}}>
-          <View style= {{flexDirection: "row"}}> 
-          <Text style={styles.username}> {usuario.username}</Text> 
-          <Ionicons name="checkmark-circle" color="#26CBFF" size = {25} style={{marginTop: 8}}/>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <Text style={{color:"#fff",   margin: 11}}>{usuario.occupation}</Text>
-          <Text style={styles.follow}> Following </Text>
-          </View>
-          </View>
-          </View>
-          <Image style={styles.picture} source={{uri: publicacion.image}} 
-           onPress={() => Linking.openURL('http//:localhost:3000/ImgDetail.js')}></Image>
-          <View style={styles.likes}>
-          <View style={{flexDirection:"row"}}>
-          <Ionicons name="heart" color="#fff" size={35}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>{cantLikes.Likes}</Text>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <Ionicons name="heart-dislike" color="#fff" size={35} style={{marginLeft:60}}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>{cantDislikes.Dislikes}</Text>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <Ionicons name="chatbubble-ellipses" color="#fff" size={35} style={{marginLeft:60}}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>{comentarios.length}</Text>
-          </View>
-          </View>
-          <Text style={{color: "#fff", marginLeft: 17, marginTop:10, fontSize: 16}}>{publicacion.description}</Text>
-          <Text style={{justifyContent:"flex-start", color: "#fff", marginTop: 10, marginLeft: 15}}>{usuario.desc}</Text>
-          <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>
-          <Text></Text>
-          <Text></Text>
-          <Text></Text>
-      
-          <View style={{flexDirection:"row", padding: 10}}>
-          <Image style={styles.profilePic} source={{uri:`${usuario.profilePicture}`}}/>
-          <View style= {{flexDirection:"column"}}>
-          <View style= {{flexDirection: "row"}}> 
-          <Text style={styles.username}> {usuario.name}</Text> 
-          <Ionicons name="checkmark-circle" color="#26CBFF" size = {25} style={{marginTop: 8}}/>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <Text style={{color:"#fff",   margin: 11}}>{usuario.occupation}</Text>
-          <Text style={styles.follow}> Following </Text>
-          </View>
-          </View>
-          </View>
-          <Image style={styles.picture} source={{uri: publicacion.image}}/>
-          <View style={styles.likes}>
-          <View style={{flexDirection:"row"}}>
-          <Ionicons name="heart" color="#fff" size={35}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <Ionicons name="heart-dislike" color="#fff" size={35} style={{marginLeft:60}}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <Ionicons name="chatbubble-ellipses" color="#fff" size={35} style={{marginLeft:60}}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
-          </View>
-          </View>
-          <Text style={{color: "#fff", marginLeft: 17, marginTop:10, fontSize: 16}}>{usuario.description}</Text>
-          <Text style={{justifyContent:"flex-start", color: "#fff", marginTop: 10, marginLeft: 15}}>{usuario.desc}</Text>
-          <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>
-          <Text></Text>
-          <Text></Text>
-          <Text></Text>
-     
-          <View style={{flexDirection:"row", padding: 10}}>
-          <Image style={styles.profilePic} source={{uri:`${usuario.profilePicture}`}}/>
-          <View style= {{flexDirection:"column"}}>
-          <View style= {{flexDirection: "row"}}> 
-          <Text style={styles.username}> {usuario.name}</Text> 
-          <Ionicons name="checkmark-circle" color="#26CBFF" size = {25} style={{marginTop: 8}}/>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <Text style={{color:"#fff",   margin: 11}}>{usuario.occupation}</Text>
-          <Text style={styles.follow}> Following </Text>
-          </View>
-          </View>
-          </View>
-          <Image style={styles.picture} source={{uri: publicacion.image}}/>
-          <View style={styles.likes}>
-          <View style={{flexDirection:"row"}}>
-          <Ionicons name="heart" color="#fff" size={35}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <Ionicons name="heart-dislike" color="#fff" size={35} style={{marginLeft:60}}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
-          </View>
-          <View style={{flexDirection:"row"}}>
-          <Ionicons name="chatbubble-ellipses" color="#fff" size={35} style={{marginLeft:60}}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
-          </View>
-          </View>
-          <Text style={{color: "#fff", marginLeft: 17, marginTop:10, fontSize: 16}}>{usuario.description}</Text>
-          <Text style={{justifyContent:"flex-start", color: "#fff", marginTop: 10, marginLeft: 15}}>{usuario.desc}</Text>
-          <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>
-          <Text></Text>
-          <Text></Text>
-          <Text></Text>
-      
-
-           <TextInput style={styles.input} placeHolder="id"/>
-          <Button
-            onPress={() => useEffect(() => {
-              obtenerPublicacion(TextInput.value);
-              obetenerUsuario(TextInput.value);
-            }
-            ,[])}
-            title="Buscar">
-            </Button>    
-            </ScrollView>
-
-          </View> */}
+      {/* <View style={styles.container}>
+        <View style={{flexDirection:"row", padding: 10}}>
+        <Image style={styles.profilePic} source={{uri:${usuario.profilePicture}}}/>
+        <View style= {{flexDirection:"column"}}>
+        <View style= {{flexDirection: "row"}}> 
+        <Text style={styles.username}> {usuario.name}</Text> 
+        <Ionicons name="checkmark-circle" color="#26CBFF" size = {25} style={{marginTop: 8}}/>
+        </View>
+        <View style={{flexDirection:"row"}}>
+        <Text style={{color:"#fff",   margin: 11}}>{usuario.occupation}</Text>
+        <Text style={styles.follow}> Following </Text>
+        </View>
+        </View>
+        </View>
+        <Image style={styles.picture} source={{uri: publicacion.image}}
+          onPress={()=>{navigation.navigate('ImgDetail')}}
+        />
+        <View style={styles.likes}>
+        <View style={{flexDirection:"row"}}>
+        <Ionicons name="heart" color="#fff" size={35}/>
+        <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
+        </View>
+        <View style={{flexDirection:"row"}}>
+        <Ionicons name="heart-dislike" color="#fff" size={35} style={{marginLeft:60}}/>
+        <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
+        </View>
+        <View style={{flexDirection:"row"}}>
+        <Ionicons name="chatbubble-ellipses" color="#fff" size={35} style={{marginLeft:60}}/>
+        <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
+        </View>
+        </View>
+        <Text style={{color: "#fff", marginLeft: 17, marginTop:10, fontSize: 16}}>{usuario.description}</Text>
+        <Text style={{justifyContent:"flex-start", color: "#fff", marginTop: 10, marginLeft: 15}}>{usuario.desc}</Text>
+        <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>
+        </View> */}
         </>
     );
 
@@ -306,7 +212,16 @@ useEffect(() => {
       marginTop: 20,
       justifyContent: "space-evenly",
       marginLeft: 140
-      }
+      },
+      item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+      },
+      title: {
+        fontSize: 32,
+      },
   });
 
 export default Home;
