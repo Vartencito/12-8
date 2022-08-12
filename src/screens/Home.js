@@ -1,70 +1,111 @@
-import React, {useEffect, useState} from "react";
-import { StyleSheet, Text, View, Button, Image,TextInput,ScrollView } from "react-native";
+import React, {useEffect, useState, useContext} from "react";
+import { StyleSheet, Text, View, Button, Image,TextInput } from "react-native";
 import axios from "axios";
-//import likesAndDislikes from "./likesAndDislikes";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { withSafeAreaInsets } from "react-native-safe-area-context";
+import TokenContext from "../context/AuthContext";
+
 //https://pbs.twimg.com/media/EtMyremWQAEcl08.jpg
-const IP = "10.144.1.29"; 
+const IP = "192.168.0.130"; 
 const Home= (props) => {
 
+const {token} = useContext(TokenContext);
 const [publicacion, setPublicacion] = useState([]);
 const [usuario, setUsuario] = useState([]);
-const [cantLikes, setCantLikes] = useState([]);
-const [cantDislikes, setCantDislikes] = useState([]);
+// const [cantLikes, setCantLikes] = useState([]);
+// const [cantDislikes, setCantDislikes] = useState([]);
+// const [comentarios, setComentarios] = useState([]);
 
 useEffect(() => {
     obtenerPublicacion();
-    obetenerUsuario();
-    obetenerLikes();
-    obetenerDislikes();
+    // obtenerUsuario(publicacion.fkUser);//fkuser
+    // obtenerDislikes(publicacion.Id);//publication.id
+    // obtenerLikes(publicacion.Id);//publication.id
+    // obtenerComentarios(publicacion.Id);//publication.id
   },[]);
-
   
   const obtenerPublicacion = () => {
-    axios.get(`http://${IP}:4000/publicaciones/7`)
+    axios.get(`http://192.168.0.130:4000/publicaciones`,{
+      headers: {
+        'authorization': `Bearer ${token}`
+      }
+    })
     .then(res => {
-      setPublicacion(res.data);
+      console.log('respuesta: ', res.data);
+      setPublicacion(res.data)
+      console.log('publicacion',publicacion);
     })
     .catch(err => console.log(err));
   }
-  //10.148.226.192
-  //192.168.0.56
-  const obetenerUsuario = () => {
-    axios.get(`http://${IP}:4000/usuarios/3`)
+
+  const obtenerUsuario = (fkUser) => {
+    axios.get(`http://${IP}:4000/usuarios/${fkUser}`,{
+      headers: {
+        'authorization': `Bearer ${token}`
+      }
+    })
     .then(res => {
+      console.log('respuesta: ',res.data)
       setUsuario(res.data);
     })
     .catch(err => console.log(err));
   }
   
-  const obetenerLikes = () => {
-    axios.get(`http://${IP}:4000/publicaciones/Likes/2`)
+  const obtenerLikes = (publicationId) => {
+    axios.get(`http://${IP}:4000/publicaciones/Likes/${publicationId}`,{
+      headers: {
+        'authorization': `Bearer ${token}`
+      }
+    })
     .then(res => {
       setCantLikes(res.data);
+      console.log('estos son los likes: ',res.data)
     })
     .catch(err => console.log(err));
   }
   
-  const obetenerDislikes = () => {
-    axios.get(`http://${IP}:4000/publicaciones/Dislikes/7`)
+  const obtenerDislikes = (publicationId) => {
+    axios.get(`
+    http://${IP}:4000/publicaciones/Disikes/${publicationId}`,{
+      headers: {
+        'authorization': `Bearer ${token}`
+      }
+    })
     .then(res => {
       setCantDislikes(res.data);
+      console.log('estos son los Dislikes: ',res.data)
+    })
+    .catch(err => console.log(err));
+  }
+
+  const obtenerComentarios = (publicationId) => {
+    axios.get(`
+    http://${IP}:4000/comentarios/publicacion/${publicationId}`,{
+      headers: {
+        'authorization': `Bearer ${token}`
+      }
+    })
+    .then(res => {
+      setComentarios(res.data);
+      console.log('estos son los comentarios: ', res.data.length)
     })
     .catch(err => console.log(err));
   }
   
-  console.log("resultado de la petición ",publicacion);
-  console.log(publicacion);
-  console.log(publicacion[1]);
-  console.log('foto de perfil: ', usuario.profilePicture)
-  console.log('usuario ', usuario)
+  // console.log('dislikes: ', cantDislikes)
+  // console.log('likes: ', cantLikes)
+  // console.log("resultado de la petición ",publicacion);
+  // console.log(publicacion);
+  // console.log(publicacion[1]);
+  // console.log('foto de perfil: ', usuario.profilePicture)
   
+  console.log('usuario afuera del map:  ', usuario)
   return (
-      <>
-
-
-            <View style={styles.cuadrado}>
+    <>
+        {
+           
+        }
+            {/* <View style={styles.cuadrado}>
             <Ionicons name="ellipsis-vertical" color="#fff" size={35} style={{padding:7}}/>
             <View style={{flexDirection:"row"}}>
             <Ionicons name="funnel" color="#fff" size={35} style={{padding:7, paddingRight:"5%", marginTop:5 }}/>
@@ -80,7 +121,7 @@ useEffect(() => {
           <Image style={styles.profilePic} source={{uri:`${usuario.profilePicture}`}}/>
           <View style= {{flexDirection:"column"}}>
           <View style= {{flexDirection: "row"}}> 
-          <Text style={styles.username}> {usuario.name}</Text> 
+          <Text style={styles.username}> {usuario.username}</Text> 
           <Ionicons name="checkmark-circle" color="#26CBFF" size = {25} style={{marginTop: 8}}/>
           </View>
           <View style={{flexDirection:"row"}}>
@@ -98,14 +139,14 @@ useEffect(() => {
           </View>
           <View style={{flexDirection:"row"}}>
           <Ionicons name="heart-dislike" color="#fff" size={35} style={{marginLeft:60}}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>56</Text>
+          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>{cantDislikes.Dislikes}</Text>
           </View>
           <View style={{flexDirection:"row"}}>
           <Ionicons name="chatbubble-ellipses" color="#fff" size={35} style={{marginLeft:60}}/>
-          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>489</Text>
+          <Text style={{color: "#fff", marginTop: 10, fontSize:17}}>{comentarios.length}</Text>
           </View>
           </View>
-          <Text style={{color: "#fff", marginLeft: 17, marginTop:10, fontSize: 16}}>{usuario.description}</Text>
+          <Text style={{color: "#fff", marginLeft: 17, marginTop:10, fontSize: 16}}>{publicacion.description}</Text>
           <Text style={{justifyContent:"flex-start", color: "#fff", marginTop: 10, marginLeft: 15}}>{usuario.desc}</Text>
           <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>
           <Text></Text>
@@ -183,7 +224,7 @@ useEffect(() => {
           <Text></Text>
       
 
-          {/* <TextInput style={styles.input} placeHolder="id"/>
+           <TextInput style={styles.input} placeHolder="id"/>
           <Button
             onPress={() => useEffect(() => {
               obtenerPublicacion(TextInput.value);
@@ -191,10 +232,10 @@ useEffect(() => {
             }
             ,[])}
             title="Buscar">
-            </Button>    */}
+            </Button>    
             </ScrollView>
 
-          </View>
+          </View> */}
         </>
     );
 
@@ -230,7 +271,7 @@ useEffect(() => {
       marginTop:5,
       flexDirection:"row",
       marginLeft: 10,
-      
+
     },
     profilePic:{
       borderRadius:100,

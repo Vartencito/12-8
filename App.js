@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import LogIn from "./src/screens/LogIn";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Navbar from "./src/navigation/Navbar";
+import { TokenProvider } from "./src/context/AuthContext";
 //rnfe
 
 
@@ -13,6 +14,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
+      <TokenProvider>
 
       <Stack.Navigator initialRouteName="Login">
 
@@ -33,6 +35,7 @@ export default function App() {
         />
 
       </Stack.Navigator>
+      </TokenProvider>
 
     </NavigationContainer>
 

@@ -1,25 +1,23 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { StyleSheet, Text, View, Pressable, TextInput, ImageBackground, Button } from "react-native";
-import LogIn from "../img/LogIn.png"
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import TokenContext from "../context/AuthContext";
+import { useMemo } from "react";
+
 
 const img = "../img/LogIn.png";
-const IP = "10.144.1.29"; 
-
-
-
+const IP = "192.168.0.130"; 
 
 const Ruta = ()=> {
 
   const navigation = useNavigation();
 
- const [usuario, setUsuario] = useState({})
- const [token, setToken] = useState([]);
+ const [usuario, setUsuario] = useState({});
+ const {token, setToken} = useContext(TokenContext)
  const [username, setUsername] = useState('');
  const [contraseña, setContraseña] = useState('');
-
 
  useEffect(() => {
   console.log('en el useffect',login(usuario));
@@ -39,6 +37,7 @@ const login = async (usuario)=>{
   ).then(response => {
     // setToken(response.data);
     if(response.data.token){
+      setToken(response.data.token);
       console.log('este es el token: ', response.data.token);  
       navigation.reset({
         index: 0,
@@ -46,7 +45,7 @@ const login = async (usuario)=>{
       });
     
     } else{
-      alert("algo salio mal jajaj"), 
+      alert("Usuario y/o contraseña incorrectos"), 
       console.log(response.data);
     }
   },error =>{
@@ -54,9 +53,6 @@ const login = async (usuario)=>{
   });
 
 }
-
-
-  console.log('usuario afuera del login: ', usuario);
 
     return (
         <ImageBackground source={require('../img/LogIn.png') } resizeMode="cover" style={styles.image} >
