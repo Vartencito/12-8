@@ -5,9 +5,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import User from "../img/User.png"
 import { ScrollView } from "react-native-web";
 
-const img = "../img/User.png";
-
-const IP = "10.152.2.140"; 
 const Profile = props => {
 
     return (
@@ -65,7 +62,7 @@ const Profile = props => {
     cuadrado:{
       justifyContent: "space-between",
       flexDirection:"row",
-      marginTop: "5%",
+      marginTop: "10%",
       width:435,
       zIndex:2,
       height:60,

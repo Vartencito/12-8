@@ -9,7 +9,7 @@ import axios from "axios";
 
 const NewPublication= props => {
   
-  const IP = "10.152.2.140"; 
+  const IP = "192.168.0.130"; 
   const [name, setName] = useState([]);
   const [url, setUrl] = useState([]);
   const [fkUser, setfkUser] = useState([]);
@@ -91,6 +91,8 @@ const NewPublication= props => {
     );
 }
   
+export default NewPublication;
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -139,4 +141,3 @@ const NewPublication= props => {
       }
   });
 
-export default NewPublication;

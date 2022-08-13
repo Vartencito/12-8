@@ -1,26 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, Image, useState, useEffect } from "react-native";
-import axios from "axios";
+import { StyleSheet, View, Image} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 
-const IP = "10.152.2.140"; 
+const IP = "192.168.0.130"; 
 const ImgDetail = props => {
-  
-  // const [publicacion, setPublicacion] = useState([]);
-
-  
-  // useEffect(() => {
-  //     obtenerPublicacion();
-  //   },[]);
-  
-  // const obtenerPublicacion = () => {
-  //     axios.get(`http://${IP}:4000/publicaciones/7`)
-  //     .then(res => {
-  //     setPublicacion(res.data);
-  // })
-  // .catch(err => console.log(err));
-  // }
 
     return (
       <>
@@ -42,6 +26,8 @@ const ImgDetail = props => {
     );
   }
   
+  export default ImgDetail;
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -54,5 +40,3 @@ const ImgDetail = props => {
         height: 400
     }
   });
-
-export default ImgDetail;
