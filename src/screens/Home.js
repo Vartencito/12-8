@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, Text, View, Image, ScrollView,TouchableHighlight } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Alert } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import TokenContext from "../context/AuthContext";
@@ -18,6 +18,7 @@ const Home = () => {
   const [comentarios, setComentarios] = useState([]);
   const [likesFromUser, setLikesFromUser] = useState([]);
   const [dislikesFromUser, setDislikesFromuser] = useState([]);
+  const [logedUser, setLogedUser] = useState([]);
 
   useEffect(() => {
     obtenerPublicacion();
@@ -27,6 +28,7 @@ const Home = () => {
     obtenerComentarios();
     obtenerLikesDelUser(user);
     obtenerDislikesDelUser(user);
+    getDataFromLogedUser(user);
   }, []);
 
   const obtenerPublicacion = () => {
@@ -91,50 +93,115 @@ const Home = () => {
       .catch(err => console.log(err));
   }
 
-  const obtenerLikesDelUser = async (user)=>{
+  const obtenerLikesDelUser = async (user) => {
     const res = await axios.post
-    (
-      `http://${IP}:4000/likesOrDislikes/likes/user`,
-      user,
-      {
-        headers: {
+      (
+        `http://${IP}:4000/likesOrDislikes/likes/user`,
+        user,
+        {
+          headers: {
             'Content-Type': 'application/json',
             'authorization': `Bearer ${token}`
+          }
         }
-      }     
-    ).then(response => {
-      setLikesFromUser(response.data)
-    },error =>{
-      console.log(error)
-    });
+      ).then(response => {
+        setLikesFromUser(response.data)
+      }, error => {
+        console.log(error)
+      });
   }
 
-  const obtenerDislikesDelUser = async (user)=>{
+  const obtenerDislikesDelUser = async (user) => {
     const res = await axios.post
-    (
-      `http://${IP}:4000/likesOrDislikes/dislikes/user`,
-      user,
-      {
-        headers: {
+      (
+        `http://${IP}:4000/likesOrDislikes/dislikes/user`,
+        user,
+        {
+          headers: {
             'Content-Type': 'application/json',
             'authorization': `Bearer ${token}`
+          }
         }
-      }     
-    ).then(response => {
-      setDislikesFromuser(response.data)
-    },error =>{
-      console.log(error)
-    });
+      ).then(response => {
+        setDislikesFromuser(response.data)
+      }, error => {
+        console.log(error)
+      });
   }
 
-  const compararLikes = (publicacion, publicacionesVotadasPorUsuario)=>{
+  const compararLikes = (publicacion, publicacionesVotadasPorUsuario) => {
     let like = false;
-    for(let i = 0; i < publicacionesVotadasPorUsuario.length; i++) {
-      if (publicacionesVotadasPorUsuario[i].Id== publicacion.Id) {
-            return like = true;
-          break;
+    for (let i = 0; i < publicacionesVotadasPorUsuario.length; i++) {
+      if (publicacionesVotadasPorUsuario[i].Id == publicacion.Id) {
+        return like = true;
+        break;
       }
+    }
   }
+
+  const getDataFromLogedUser = (user) =>{
+    axios.post(`http://${IP}:4000/usuarios/usuario`, 
+    {
+      username: user.username
+    },
+    {
+      headers: {
+        'authorization': `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        setLogedUser(res.data)
+      })
+      .catch(err => console.log(err));
+  }
+
+  const darLike=()=>{
+    if (compararLikes(publicacion, likesFromUser)) {
+      // const data = {
+      //   fkUser: logedUser.Id,
+      //   fkPublication: publicacion.Id
+      // }
+      // console.log(data)
+      // const res = axios.delete(`http://${IP}:4000/likesOrDislikes`,
+      // data,
+      // {
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'authorization': `Bearer ${token}`,
+      //   }
+      // },
+      //   ).then(response =>{
+      //     console.log('esta es la rta: ',response.data)
+      //   })
+      //   .catch(function (error) {
+      //     console.log('este es el error',error);
+      //   });
+      //BORRAR LIKE DE LA BD
+      return alert('ya le diste like')
+    }
+    else {
+      //fijarme si esta en los dislikes
+          //si esta en los dislikes (hacer update)
+          // si no esta ni en los likes ni en los dislikes, hacer lo de abajo (insert like)
+      const data = {
+        fkPublication: publicacion.Id,
+        fkUser: logedUser.Id
+      }
+      console.log(data);
+      const res = axios.post(`http://${IP}:4000/likesOrDislikes/likes`,
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${token}`
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+    const actualizar =()=> obtenerLikes(); obtenerLikesDelUser(user);
+    actualizar();
   }
 
   return (
@@ -165,19 +232,23 @@ const Home = () => {
           <Image style={styles.picture} source={{ uri: publicacion.image }}
             onPress={() => Linking.openURL('http//:localhost:3000/ImgDetail.js')}></Image>
           <View style={styles.likes}>
-            <View style={{ flexDirection: "row", justifyContent:"space-around" }}>
-              <TouchableHighlight >
-              <Ionicons name="heart" color={compararLikes(publicacion, likesFromUser) ? '#ED4855' : '#fff'} size={35} />
-              </TouchableHighlight>
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95}}>{cantLikes.Likes ? cantLikes.Likes : 0}</Text>
-              <TouchableHighlight>
-              <Ionicons name="heart-dislike" color={compararLikes(publicacion, dislikesFromUser) ? '#ED4855' : '#fff'} size={35}  />
-              </TouchableHighlight>
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95}}>{cantDislikes.Dislikes ? cantDislikes.Dislikes : 0}</Text>
-              <TouchableHighlight>
-              <Ionicons name="chatbubble-ellipses" color="#fff" size={35}/>
-              </TouchableHighlight>
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95}}>{comentarios.length ? comentarios.length : 0}</Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+              <TouchableWithoutFeedback 
+              onPress={darLike}
+              >
+                <Ionicons name="heart" color={compararLikes(publicacion, likesFromUser) ? '#ED4855' : '#fff'} size={35} />
+              </TouchableWithoutFeedback>
+              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95 }}>{cantLikes.Likes ? cantLikes.Likes : 0}</Text>
+              <TouchableWithoutFeedback 
+              // onPress={darDislike(publicacion, dislikesFromUser)}
+              >
+                <Ionicons name="heart-dislike" color={compararLikes(publicacion, dislikesFromUser) ? '#ED4855' : '#fff'} size={35} />
+              </TouchableWithoutFeedback>
+              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95 }}>{cantDislikes.Dislikes ? cantDislikes.Dislikes : 0}</Text>
+              <TouchableWithoutFeedback>
+                <Ionicons name="chatbubble-ellipses" color="#fff" size={35} />
+              </TouchableWithoutFeedback>
+              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95 }}>{comentarios.length ? comentarios.length : 0}</Text>
             </View>
           </View>
           <Text style={{ color: "#fff", marginLeft: 17, marginTop: 10, fontSize: 16 }}>{publicacion.description}</Text>
@@ -186,7 +257,6 @@ const Home = () => {
         </ScrollView>
       </View>
     </>
-
   );
 }
 
@@ -220,7 +290,7 @@ const styles = StyleSheet.create({
   },
   likes: {
     marginTop: 5,
-    justifyContent:"space-around",
+    justifyContent: "space-around",
     marginLeft: 10,
   },
   profilePic: {
@@ -264,9 +334,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-  },
-  itemWrap:{
-    flexWrap: "wrap",
   }
 });
 
