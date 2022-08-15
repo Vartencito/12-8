@@ -1,11 +1,66 @@
-import React from "react";
-import { StyleSheet, Text, View, Button, Image, useState, useEffect } from "react-native";
+import React , {useState, useEffect, useContext }from "react";
+import { StyleSheet, Text, View, Button, Image } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import User from "../img/User.png"
+import UserPFP from "../img/User.png"
 import { ScrollView } from "react-native-web";
+import UserContext from "../context/UserContext";
+import TokenContext from "../context/AuthContext";
+
+const IP = '192.168.0.130';
 
 const Profile = props => {
+
+  const {user} = useContext(UserContext);
+  const {token} = useContext(TokenContext)
+  const [data, setData] = useState([]);
+  const [dataPublication, setDataPublication] = useState([]);
+
+  useEffect(() => {
+    getDataUser(user);
+  }, []);
+
+  useEffect(() => {
+    getDataPublication(user);
+  },[])
+
+  const getDataUser = async (user)=>{
+    const res = await axios.post
+    (
+      `http://${IP}:4000/usuarios/usuario`,
+      user,
+      {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+      }     
+    ).then(response => {
+      setData(response.data)
+    },error =>{
+      console.log(error)
+    });
+  }
+
+  const getDataPublication = async (user)=>{
+    const res = await axios.post
+    (
+      `http://${IP}:4000/publicaciones/username`,
+      user,
+      {
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${token}`
+        }
+      }     
+    ).then(response => {
+      console.log('esta es la respuesta',response.data)
+      setDataPublication(response.data)
+    },error =>{
+      console.log(error)
+    });
+  }
+
+  console.log(dataPublication);
 
     return (
       <>
@@ -18,12 +73,11 @@ const Profile = props => {
            </View> 
         <View style={styles.container}>
         <View style={{flexDirection: "row"}}>
-          <Text style={styles.user}> Caitpivy </Text>
+          <Text style={styles.user}> {data.username} </Text>
           <Ionicons name="create" color="#fff" size={35}/>
         </View>
-          <Image source={require('../img/User.png') } style={styles.image} />
-          <Text style={styles.occupation}>Designer</Text>
-
+          <Image source={data.profilePicture ? { uri: data.profilePicture } : require('../img/User.png')} style={styles.image} />
+          <Text style={styles.occupation}>{data.occupation}</Text>
           <View style={{flexDirection: "row", textAlign: "center", marginTop: "5%"}}>
             <View style={styles.align}>
               <Text style={styles.numbers}>300</Text>
@@ -37,12 +91,8 @@ const Profile = props => {
             <Text style={styles.numbers}>300</Text>
             <Text style={styles.numbers2}>Followers</Text>
             </View>
-
           </View>
           <Ionicons name="grid" color="#160F0A" size={35} style={{marginTop: "10%"}}/>        
-          
-
-          
         </View>
       </>
     );
@@ -56,7 +106,7 @@ const Profile = props => {
       justifyContent: "center",
     },
     image:{
-        width: "40%",
+        width: "45%",
         height: "25%"
     },
     cuadrado:{

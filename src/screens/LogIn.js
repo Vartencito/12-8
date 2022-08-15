@@ -4,6 +4,7 @@ import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import TokenContext from "../context/AuthContext";
+import UserContext from "../context/UserContext";
 import { useMemo } from "react";
 
 
@@ -12,21 +13,16 @@ const IP = "192.168.0.130";
 
 const LogIn = ({navigation})=> {
 
- const [usuario, setUsuario] = useState({});
+ const {user, setUser} = useContext(UserContext);
  const {token, setToken} = useContext(TokenContext)
  const [username, setUsername] = useState('');
  const [contraseña, setContraseña] = useState('');
 
- useEffect(() => {
-  login(usuario)
-},[usuario])
-
-
-const login = async (usuario)=>{
+const getToken = async (user)=>{
   const res = await axios.post
   (
     `http://${IP}:4000/usuarios/login`,
-    usuario,
+    user,
     {
       headers: {
           'Content-Type': 'application/json'
@@ -37,16 +33,15 @@ const login = async (usuario)=>{
       setToken(response.data.token);
       navigation.navigate('Navbar');
     } else{
-      alert(response.data)
+        alert(response.data)
     }
   },error =>{
     console.log(error)
   });
-
 }
 
     return (
-      <ImageBackground source={require('../img/LogIn.png') } resizeMode="cover" style={styles.image} >
+      <ImageBackground source={require('../img/LogIn.png')} resizeMode="cover" style={styles.image} >
         <View style={styles.container}>
         <View style={{paddingBottom: 25}}>
         <TextInput style={styles.input} placeholder="     User"
@@ -59,7 +54,7 @@ const login = async (usuario)=>{
         />
         </View>
         <Pressable style={styles.button} title="Log in" borderRadius={30}
-         onPress={() => setUsuario({username: username,password: contraseña})}
+         onPress={() => {setUser({username:username, password: contraseña}); console.log(user);getToken(user)}}
         >
           <Text style={{color: '#733A26', fontWeight: 'bold'}}>
             Log In

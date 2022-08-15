@@ -6,6 +6,7 @@ import LogIn from "./src/screens/LogIn";
 import Navbar from "./src/navigation/Navbar";
 import { TokenProvider } from "./src/context/AuthContext";
 import MainStack from "./src/stack/MainStack";
+import { UserProvider } from "./src/context/UserContext";
 
 export default function App() {
 
@@ -38,9 +39,11 @@ export default function App() {
 
     // </NavigationContainer>
     <NavigationContainer>
-    <TokenProvider>
-      <MainStack />
-    </TokenProvider>
+      <TokenProvider>
+        <UserProvider>
+          <MainStack />
+        </UserProvider>
+      </TokenProvider>
     </NavigationContainer>
 
   );

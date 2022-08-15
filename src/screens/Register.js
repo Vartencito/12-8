@@ -19,11 +19,8 @@ const Register = ({navigation}) => {
         <ImageBackground source={require('../img/LogIn.png') } resizeMode="cover" style={styles.image} >
         <ScrollView>
         <View style={styles.container}>
-        <TextInput style={styles.input} placeholder="     User"
-              onChangeText={(value) => setUsername(value)}
-        />
-        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true}
-              onChangeText={(value) => setContraseña(value)}/>
+        <TextInput style={styles.input} placeholder="     User"/>
+        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true}/>
 
         <View style={{flexDirection: "row", justifyContent: "space-between"}}>
             <TextInput style={styles.input2}/>

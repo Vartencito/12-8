@@ -1,19 +1,23 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView,TouchableHighlight } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import TokenContext from "../context/AuthContext";
+import UserContext from "../context/UserContext";
 
 const IP = "192.168.0.130";
 
 const Home = () => {
 
   const { token } = useContext(TokenContext);
+  const { user } = useContext(UserContext);
   const [publicacion, setPublicacion] = useState([]);
   const [usuario, setUsuario] = useState([]);
   const [cantLikes, setCantLikes] = useState([]);
   const [cantDislikes, setCantDislikes] = useState([]);
   const [comentarios, setComentarios] = useState([]);
+  const [likesFromUser, setLikesFromUser] = useState([]);
+  const [dislikesFromUser, setDislikesFromuser] = useState([]);
 
   useEffect(() => {
     obtenerPublicacion();
@@ -21,6 +25,8 @@ const Home = () => {
     obtenerLikes();
     obtenerDislikes();
     obtenerComentarios();
+    obtenerLikesDelUser(user);
+    obtenerDislikesDelUser(user);
   }, []);
 
   const obtenerPublicacion = () => {
@@ -85,6 +91,51 @@ const Home = () => {
       .catch(err => console.log(err));
   }
 
+  const obtenerLikesDelUser = async (user)=>{
+    const res = await axios.post
+    (
+      `http://${IP}:4000/likesOrDislikes/likes/user`,
+      user,
+      {
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${token}`
+        }
+      }     
+    ).then(response => {
+      setLikesFromUser(response.data)
+    },error =>{
+      console.log(error)
+    });
+  }
+
+  const obtenerDislikesDelUser = async (user)=>{
+    const res = await axios.post
+    (
+      `http://${IP}:4000/likesOrDislikes/dislikes/user`,
+      user,
+      {
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${token}`
+        }
+      }     
+    ).then(response => {
+      setDislikesFromuser(response.data)
+    },error =>{
+      console.log(error)
+    });
+  }
+
+  const compararLikes = (publicacion, publicacionesVotadasPorUsuario)=>{
+    let like = false;
+    for(let i = 0; i < publicacionesVotadasPorUsuario.length; i++) {
+      if (publicacionesVotadasPorUsuario[i].Id== publicacion.Id) {
+            return like = true;
+          break;
+      }
+  }
+  }
 
   return (
     <>
@@ -98,7 +149,6 @@ const Home = () => {
 
       <View style={styles.container}>
         <ScrollView>
-
           <View style={{ flexDirection: "row", padding: 10 }}>{/*EMPIEZA LA PUBLICACION*/}
             <Image style={styles.profilePic} source={{ uri: `${usuario.profilePicture}` }} />
             <View style={{ flexDirection: "column" }}>
@@ -115,95 +165,25 @@ const Home = () => {
           <Image style={styles.picture} source={{ uri: publicacion.image }}
             onPress={() => Linking.openURL('http//:localhost:3000/ImgDetail.js')}></Image>
           <View style={styles.likes}>
-            <View style={{ flexDirection: "row" }}>
-              <Ionicons name="heart" color="#fff" size={35} />
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17 }}>{cantLikes.Likes ? cantLikes.Likes : 0}</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Ionicons name="heart-dislike" color="#fff" size={35} style={{ marginLeft: 60 }} />
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17 }}>{cantDislikes.Dislikes ? cantDislikes.Dislikes : 0}</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Ionicons name="chatbubble-ellipses" color="#fff" size={35} style={{ marginLeft: 60 }} />
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17 }}>{comentarios.length ? comentarios.length : 0}</Text>
+            <View style={{ flexDirection: "row", justifyContent:"space-around" }}>
+              <TouchableHighlight >
+              <Ionicons name="heart" color={compararLikes(publicacion, likesFromUser) ? '#ED4855' : '#fff'} size={35} />
+              </TouchableHighlight>
+              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95}}>{cantLikes.Likes ? cantLikes.Likes : 0}</Text>
+              <TouchableHighlight>
+              <Ionicons name="heart-dislike" color={compararLikes(publicacion, dislikesFromUser) ? '#ED4855' : '#fff'} size={35}  />
+              </TouchableHighlight>
+              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95}}>{cantDislikes.Dislikes ? cantDislikes.Dislikes : 0}</Text>
+              <TouchableHighlight>
+              <Ionicons name="chatbubble-ellipses" color="#fff" size={35}/>
+              </TouchableHighlight>
+              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95}}>{comentarios.length ? comentarios.length : 0}</Text>
             </View>
           </View>
-          <Text style={{ color: "#fff", marginLeft: 17, marginTop: 10, fontSize: 16 }}>{usuario.description}</Text>
+          <Text style={{ color: "#fff", marginLeft: 17, marginTop: 10, fontSize: 16 }}>{publicacion.description}</Text>
           <Text style={{ justifyContent: "flex-start", color: "#fff", marginTop: 10, marginLeft: 15 }}>{usuario.desc}</Text>
           <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>{/*TERMINA LA PUBLICACION*/}
-          <Text></Text>
-          <Text></Text>
-          <Text></Text>
-
-          <View style={{ flexDirection: "row", padding: 10 }}>
-            <Image style={styles.profilePic} source={{ uri: `${usuario.profilePicture}` }} />
-            <View style={{ flexDirection: "column" }}>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={styles.username}> {usuario.name}</Text>
-                <Ionicons name="checkmark-circle" color="#26CBFF" size={25} style={{ marginTop: 8 }} />
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ color: "#fff", margin: 11 }}>{usuario.occupation}</Text>
-                <Text style={styles.follow}> Following </Text>
-              </View>
-            </View>
-          </View>
-          <Image style={styles.picture} source={{ uri: publicacion.image }} />
-          <View style={styles.likes}>
-            <View style={{ flexDirection: "row" }}>
-              <Ionicons name="heart" color="#fff" size={35} />
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17 }}>489</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Ionicons name="heart-dislike" color="#fff" size={35} style={{ marginLeft: 60 }} />
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17 }}>489</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Ionicons name="chatbubble-ellipses" color="#fff" size={35} style={{ marginLeft: 60 }} />
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17 }}>489</Text>
-            </View>
-          </View>
-          <Text style={{ color: "#fff", marginLeft: 17, marginTop: 10, fontSize: 16 }}>{usuario.description}</Text>
-          <Text style={{ justifyContent: "flex-start", color: "#fff", marginTop: 10, marginLeft: 15 }}>{usuario.desc}</Text>
-          <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>
-          <Text></Text>
-          <Text></Text>
-          <Text></Text>
-
-          <View style={{ flexDirection: "row", padding: 10 }}>
-            <Image style={styles.profilePic} source={{ uri: `${usuario.profilePicture}` }} />
-            <View style={{ flexDirection: "column" }}>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={styles.username}> {usuario.name}</Text>
-                <Ionicons name="checkmark-circle" color="#26CBFF" size={25} style={{ marginTop: 8 }} />
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ color: "#fff", margin: 11 }}>{usuario.occupation}</Text>
-                <Text style={styles.follow}> Following </Text>
-              </View>
-            </View>
-          </View>
-          <Image style={styles.picture} source={{ uri: publicacion.image }} />
-          <View style={styles.likes}>
-            <View style={{ flexDirection: "row" }}>
-              <Ionicons name="heart" color="#fff" size={35} />
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17 }}>489</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Ionicons name="heart-dislike" color="#fff" size={35} style={{ marginLeft: 60 }} />
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17 }}>489</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Ionicons name="chatbubble-ellipses" color="#fff" size={35} style={{ marginLeft: 60 }} />
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17 }}>489</Text>
-            </View>
-          </View>
-          <Text style={{ color: "#fff", marginLeft: 17, marginTop: 10, fontSize: 16 }}>{usuario.description}</Text>
-          <Text style={{ justifyContent: "flex-start", color: "#fff", marginTop: 10, marginLeft: 15 }}>{usuario.desc}</Text>
-          <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>
-
         </ScrollView>
-
       </View>
     </>
 
@@ -240,7 +220,7 @@ const styles = StyleSheet.create({
   },
   likes: {
     marginTop: 5,
-    flexDirection: "row",
+    justifyContent:"space-around",
     marginLeft: 10,
   },
   profilePic: {
@@ -285,5 +265,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
   },
+  itemWrap:{
+    flexWrap: "wrap",
+  }
 });
 
