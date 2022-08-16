@@ -3,13 +3,12 @@ import { StyleSheet, View, Image} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 
-const IP = "192.168.0.130"; 
+const IP = "10.152.2.88"; 
 const ImgDetail = props => {
 
     return (
       <>
         <View style={{backgroundColor: "#6e0a03" }}>
-        <Ionicons name="arrow-back" color="#fff" size={50} style={{paddingRight:"5%", marginTop:"5%" }}/>
         </View>
         <View style={styles.container}>
         

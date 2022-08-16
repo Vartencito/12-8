@@ -5,7 +5,7 @@ import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const img = "../img/LogIn.png";
-const IP = "192.168.0.56"; 
+const IP = "10.152.2.88"; 
 
 const Register = ({navigation}) => {
 

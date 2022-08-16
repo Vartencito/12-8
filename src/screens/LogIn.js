@@ -9,7 +9,7 @@ import { useMemo } from "react";
 
 
 const img = "../img/LogIn.png";
-const IP = "192.168.0.130"; 
+const IP = "10.152.2.88"; 
 
 const LogIn = ({navigation})=> {
 

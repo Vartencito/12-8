@@ -9,6 +9,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import ImgDetail from "../screens/ImgDetail";
 import LogIn from '../screens/LogIn';
 import Register from '../screens/Register';
+import PictureStack from "../stack/PictureStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,15 +31,13 @@ const Navbar = () => {
           if (rn === "NewPub") {
             iconName = focused ? "list" : "list-outline";
           }
-          else if (rn === "Home") {
+          else if (rn === "PictureStack") {
             iconName = focused ? "home" : "home";
           }
           else if (rn === "Profile") {
             iconName = focused ? "person" : "person";
           }
-          else if (rn === "ImgDetail") {
-            iconName = focused ? "search-outline" : "search-outline";
-          }
+       
           return <Ionicons name={iconName} size={40} color={color} />;
         },
       })}
@@ -57,10 +56,9 @@ const Navbar = () => {
         }
       }}
     >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="PictureStack" component={PictureStack} />
       <Tab.Screen name="Profile" component={Profile} />
       <Tab.Screen name="NewPub" component={NewPublication} />
-      <Tab.Screen name='ImgDetail' component={ImgDetail} />
     </Tab.Navigator>
 
   )

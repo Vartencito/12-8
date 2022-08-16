@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Alert } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Alert, TouchableOpacity } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
+import { useNavigation } from "@react-navigation/native";
 
-const IP = "192.168.0.130";
+const IP = "10.152.2.88";
 
 const Home = () => {
 
@@ -19,6 +20,8 @@ const Home = () => {
   const [likesFromUser, setLikesFromUser] = useState([]);
   const [dislikesFromUser, setDislikesFromuser] = useState([]);
   const [logedUser, setLogedUser] = useState([]);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     obtenerPublicacion();
@@ -229,8 +232,9 @@ const Home = () => {
               </View>
             </View>
           </View>
-          <Image style={styles.picture} source={{ uri: publicacion.image }}
-            onPress={() => Linking.openURL('http//:localhost:3000/ImgDetail.js')}></Image>
+          <TouchableOpacity  onPress={() => navigation.navigate('ImgDetail')}>
+          <Image style={styles.picture} source={{ uri: publicacion.image }}></Image>
+          </TouchableOpacity>
           <View style={styles.likes}>
             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
               <TouchableWithoutFeedback 
