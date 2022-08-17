@@ -158,61 +158,41 @@ const Home = () => {
       .catch(err => console.log(err));
   }
 
-  const darLike= async ()=>{
+  const darLike = async () => {
+    const data = {
+      fkUser: logedUser.Id,
+      fkPublication: publicacion.Id
+    }
     if (compararLikes(publicacion, likesFromUser)) {
-      const data = {
-        fkUser: logedUser.Id,
-        fkPublication: publicacion.Id
-      }
       const res = await axios.delete(`http://${IP}:4000/likesOrDislikes`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `bearer ${token}`,
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        data
-      },
-      ).then(response =>{
-          console.log('esta es la rta: ',response.data)
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${token}`,
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          data
         })
-        .catch(function (error) {
-          console.log('este es el error',error);
-        });
-        const actualizar = async()=> obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-        await actualizar();
+      const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
+      await actualizar();
     }
     else {
 
       if (compararLikes(publicacion, dislikesFromUser)) {
-        const data = {
-          fkUser: logedUser.Id,
-          fkPublication: publicacion.Id
-        }
         const res = await axios.put(`http://${IP}:4000/likesOrDislikes/likes`,
-        data,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'X-Requested-With': 'XMLHttpRequest'
+          data,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+              'X-Requested-With': 'XMLHttpRequest'
+            }
           }
-        }
-        ).then(response =>{
-            console.log('esta es la rta: ',response.data)
-          })
-          .catch(function (error) {
-            console.log('este es el error',error);
-          });
-          const actualizar = async()=> obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-          await actualizar();
+        )
+        const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
+        await actualizar();
       }
-      else{
-        const data = {
-          fkPublication: publicacion.Id,
-          fkUser: logedUser.Id
-        }
-        console.log(data);
+      else {
         const res = await axios.post(`http://${IP}:4000/likesOrDislikes/likes`,
           data,
           {
@@ -221,73 +201,45 @@ const Home = () => {
               'authorization': `Bearer ${token}`
             }
           })
-          .catch(function (error) {
-            console.log(error);
-          });
       }
-      const actualizar = async()=> obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
+      const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
       await actualizar();
-      }
-      //fijarme si esta en los dislikes
-          //si esta en los dislikes (hacer update)
-          // si no esta ni en los likes ni en los dislikes, hacer lo de abajo (insert like)
-      
+    }
   }
 
-  const darDislike= async ()=>{
-    if (compararLikes(publicacion, dislikesFromUser)) {
-      const data = {
-        fkUser: logedUser.Id,
-        fkPublication: publicacion.Id
-      }
-      const res = await axios.delete(`http://${IP}:4000/likesOrDislikes`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `bearer ${token}`,
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        data
-      },
-      ).then(response =>{
-          console.log('esta es la rta: ',response.data)
-        })
-        .catch(function (error) {
-          console.log('este es el error',error);
-        });
-        const actualizar = async()=> obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-        await actualizar();
+  const darDislike = async () => {
+    const data = {
+      fkUser: logedUser.Id,
+      fkPublication: publicacion.Id
     }
-    else {
-      if (compararLikes(publicacion, likesFromUser)) {
-        const data = {
-          fkUser: logedUser.Id,
-          fkPublication: publicacion.Id
-        }
-        const res = await axios.put(`http://${IP}:4000/likesOrDislikes/dislikes`,
-        data,
+    if (compararLikes(publicacion, dislikesFromUser)) {
+      const res = await axios.delete(`http://${IP}:4000/likesOrDislikes`,
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        }
-        ).then(response =>{
-            console.log('esta es la rta: ',response.data)
+            'Authorization': `bearer ${token}`
+          },
+          data
+        },
+      )
+      const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
+      await actualizar();
+    }
+    else {
+      if (compararLikes(publicacion, likesFromUser)) {
+        const res = await axios.put(`http://${IP}:4000/likesOrDislikes/dislikes`,
+          data,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+              'X-Requested-With': 'XMLHttpRequest'
+            }
           })
-          .catch(function (error) {
-            console.log('este es el error',error);
-          });
-          const actualizar = async()=> obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-          await actualizar();
+        const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
+        await actualizar();
       }
-      else{
-        const data = {
-          fkPublication: publicacion.Id,
-          fkUser: logedUser.Id
-        }
-        console.log(data);
+      else {
         const res = await axios.post(`http://${IP}:4000/likesOrDislikes/dislikes`,
           data,
           {
@@ -296,17 +248,10 @@ const Home = () => {
               'authorization': `Bearer ${token}`
             }
           })
-          .catch(function (error) {
-            console.log(error);
-          });
       }
-      const actualizar = async()=> obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
+      const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
       await actualizar();
-      }
-      //fijarme si esta en los dislikes
-          //si esta en los dislikes (hacer update)
-          // si no esta ni en los likes ni en los dislikes, hacer lo de abajo (insert like)
-      
+    }
   }
 
   return (

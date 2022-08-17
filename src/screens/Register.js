@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { StyleSheet, Text, View, Pressable, TextInput, ImageBackground, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Pressable, TextInput, ImageBackground, ScrollView} from "react-native";
 import LogIn from "../img/LogIn.png"
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -9,34 +9,75 @@ const IP = "192.168.0.130";
 
 const Register = ({navigation}) => {
 
-    const Register =()=>{
-        alert('cuenta creada');
+  
+  
+    const [username, setUsername] = useState([]);
+    const [password, setPassword] = useState([]);
+    const [name, setName] = useState([]);
+    const [lastname, setLastname] = useState([]);
+    const [cellphone, setCellphone] = useState([]);
+    const [mail, setmail] = useState([]);
+    const [description, setDescription] = useState([]);
+    const [premium, setPremium] = useState([]);
+    const [occupation, setOccupation] = useState([]);
+    const [user, setUser] = useState({});
+
+    const handleregister = async () =>{
+      if(username.length < 1 || password.length < 1 || mail.length < 1 || premium.length < 1){
+        return alert('los campos username, password, mail y premium son obilgatorios, completelos')
+      } else{
+        setUser({
+          username: username,
+          password: password,
+          name: name,
+          lastname: lastname,
+          cellphone: cellphone,
+          mail: mail,
+          description: description,
+          premium: premium,
+          occupation: occupation
+        })
+        await register()
+      }
     }
 
+    const register = async ()=>{
+      console.log('estoy aca 2');
+      const res = await axios.post
+      (
+        `http://${IP}:4000/usuarios/register`,
+        user,
+        {
+          headers: {
+              'Content-Type': 'application/json'
+          }
+        }).then(response =>{
+          navigation.navigate('Login')
+        })
+      }
 
     return (
       <>
         <ImageBackground source={require('../img/LogIn.png') } resizeMode="cover" style={styles.image} >
         <ScrollView>
         <View style={styles.container}>
-        <TextInput style={styles.input} placeholder="     User"/>
-        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true}/>
+        <TextInput style={styles.input} placeholder="     Username" onChangeText={(value) => setUsername(value)}/>
+        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true} onChangeText={(value) => setPassword(value)}/>
 
         <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-            <TextInput style={styles.input2}/>
-            <TextInput style={styles.input2}/>
+            <TextInput style={styles.input2} placeholder="     Name" onChangeText={(value) => setName(value)}/>
+            <TextInput style={styles.input2} placeholder="     Lastname" onChangeText={(value) => setLastname(value)}/>
         </View>
         <View>
-        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true}/>
-        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true}/>
-        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true}/>
-        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true}/>
-        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true}/>
-        <TextInput style={styles.input} placeholder="     Password" secureTextEntry={true}/>
+        <TextInput style={styles.input} placeholder="     Cellphone" keyboardType="phone-pad" onChangeText={(value) => setCellphone(value)}/>
+        <TextInput style={styles.input} placeholder="     Mail" keyboardType="email-address" onChangeText={(value) => setmail(value)}/>
+        <TextInput style={styles.input} placeholder="     Description" onChangeText={(value) => setDescription(value)}/>
+         <TextInput style={styles.input} placeholder="     Premium" onChangeText={(value) => setPremium(value)}/>
+        <TextInput style={styles.input} placeholder="     Occupation" onChangeText={(value) => setOccupation(value)}/>
         </View>
         <Pressable 
             style={styles.button} title="Log in" borderRadius={30}
-            onPress={Register}
+            onPress={handleregister}
             >
             <Text style={{color: '#733A26', fontWeight: 'bold'}}>Registrarse</Text>
         </Pressable>
@@ -46,9 +87,9 @@ const Register = ({navigation}) => {
             >
             <Text style={{color: '#733A26', fontWeight: 'bold'}}>Sí tengo cuenta</Text>
         </Pressable>
+
         </View>
         </ScrollView>
-
         </ImageBackground>
       </>
     );
@@ -95,6 +136,9 @@ const Register = ({navigation}) => {
       width: '100%',
       flex: 1,
       justifyContent: "center"
+    },  
+    checkbox: {
+      alignSelf: "center",
     },
     
   });
