@@ -3,7 +3,7 @@ import { StyleSheet, View, Image} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 
-const IP = "192.168.0.130"; 
+const IP = "10.144.1.13"; 
 const ImgDetail = props => {
 
     return (

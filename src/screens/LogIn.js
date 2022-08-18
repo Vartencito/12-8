@@ -9,7 +9,7 @@ import { useMemo } from "react";
 
 
 const img = "../img/LogIn.png";
-const IP = "192.168.0.130"; 
+const IP = "10.144.1.13"; 
 
 const LogIn = ({navigation})=> {
 
@@ -65,7 +65,7 @@ const getToken = async (user)=>{
           style={styles.button}
           onPress={()=>navigation.navigate('Register')}
         >
-          <Text>No tengo una cuenta</Text>
+          <Text>Register</Text>
         </Pressable>
 
           <View style={{flexDirection:"row", marginTop: 100}}>

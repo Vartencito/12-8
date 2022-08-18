@@ -5,7 +5,7 @@ import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const img = "../img/LogIn.png";
-const IP = "192.168.0.130"; 
+const IP = "10.144.1.13"; 
 
 const Register = ({navigation}) => {
 
@@ -22,10 +22,11 @@ const Register = ({navigation}) => {
     const [occupation, setOccupation] = useState([]);
     const [user, setUser] = useState({});
 
-    const handleregister = async () =>{
+    const handleRegister = async () =>{
       if(username.length < 1 || password.length < 1 || mail.length < 1 || premium.length < 1){
         return alert('los campos username, password, mail y premium son obilgatorios, completelos')
       } else{
+        console.log('holaaaa')
         setUser({
           username: username,
           password: password,
@@ -36,16 +37,16 @@ const Register = ({navigation}) => {
           description: description,
           premium: premium,
           occupation: occupation
-        })
-        await register()
+        });
+        console.log(user)
+        register()
       }
     }
 
     const register = async ()=>{
-      console.log('estoy aca 2');
       const res = await axios.post
       (
-        `http://${IP}:4000/usuarios/register`,
+        `http://10.144.1.13:4000/usuarios/register`,
         user,
         {
           headers: {
@@ -77,7 +78,7 @@ const Register = ({navigation}) => {
         </View>
         <Pressable 
             style={styles.button} title="Log in" borderRadius={30}
-            onPress={handleregister}
+            onPress={handleRegister}
             >
             <Text style={{color: '#733A26', fontWeight: 'bold'}}>Registrarse</Text>
         </Pressable>

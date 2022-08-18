@@ -1,18 +1,20 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Alert, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Alert, TouchableOpacity, FlatList } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import { useNavigation } from "@react-navigation/native";
 
-const IP = "192.168.0.130";
+const IP = "10.144.1.13";
 
 const Home = () => {
 
   const { token } = useContext(TokenContext);
   const { user } = useContext(UserContext);
   const [publicacion, setPublicacion] = useState([]);
+  const [publicaciones, setPublicaciones] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
   const [usuario, setUsuario] = useState([]);
   const [cantLikes, setCantLikes] = useState([]);
   const [cantDislikes, setCantDislikes] = useState([]);
@@ -32,10 +34,45 @@ const Home = () => {
     obtenerLikesDelUser(user);
     obtenerDislikesDelUser(user);
     getDataFromLogedUser(user);
+    obtenerPublicaciones(); 
   }, []);
 
-  const obtenerPublicacion = () => {
-    axios.get(`http://${IP}:4000/publicaciones/7`, {
+  useEffect(()=>{
+   obtenerUsuarios();
+  },[publicaciones])
+
+  const obtenerPublicaciones = async () =>{
+    await axios.get(`http://${IP}:4000/publicaciones`, {
+      headers: {
+        'authorization': `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        setPublicaciones(res.data)
+      })
+      .catch(err => console.log(err));
+  }
+
+  const obtenerUsuarios = async () =>{
+    let users = [];
+    for (let i = 0; i < publicaciones.length; i++) {
+      await axios.get(`http://${IP}:4000/usuarios/${publicaciones[i].fkUser}`, {
+        headers: {
+          'authorization': `Bearer ${token}`
+        }
+      }).then(res => {
+        console.log('esta es la rta: ',res.data)
+        users.push(res.data)
+        setUsuarios(users)
+        console.log('array de usuarios: ',users)
+      })
+      .catch(err => console.log(err));
+    }
+    console.log('usuarios del state: ',usuarios)
+  }
+
+  const obtenerPublicacion = async () => {
+    await axios.get(`http://${IP}:4000/publicaciones/7`, {
       headers: {
         'authorization': `Bearer ${token}`
       }
@@ -46,8 +83,8 @@ const Home = () => {
       .catch(err => console.log(err));
   }
 
-  const obtenerUsuario = () => {
-    axios.get(`http://${IP}:4000/usuarios/2`, {
+  const obtenerUsuario = async () => {
+    await axios.get(`http://${IP}:4000/usuarios/2`, {
       headers: {
         'authorization': `Bearer ${token}`
       }
@@ -58,8 +95,8 @@ const Home = () => {
       .catch(err => console.log(err));
   }
 
-  const obtenerLikes = () => {
-    axios.get(`http://${IP}:4000/publicaciones/Likes/7`, {
+  const obtenerLikes = async () => {
+    await axios.get(`http://${IP}:4000/publicaciones/Likes/7`, {
       headers: {
         'authorization': `Bearer ${token}`
       }
@@ -70,8 +107,8 @@ const Home = () => {
       .catch(err => console.log(err));
   }
 
-  const obtenerDislikes = () => {
-    axios.get(`
+  const obtenerDislikes = async () => {
+    await axios.get(`
     http://${IP}:4000/publicaciones/Disikes/7`, {
       headers: {
         'authorization': `Bearer ${token}`
@@ -83,8 +120,8 @@ const Home = () => {
       .catch(err => console.log(err));
   }
 
-  const obtenerComentarios = () => {
-    axios.get(`
+  const obtenerComentarios = async () => {
+    await axios.get(`
     http://${IP}:4000/comentarios/publicacion/7`, {
       headers: {
         'authorization': `Bearer ${token}`
@@ -142,8 +179,8 @@ const Home = () => {
     }
   }
 
-  const getDataFromLogedUser = (user) =>{
-    axios.post(`http://${IP}:4000/usuarios/usuario`, 
+  const getDataFromLogedUser = async (user) =>{
+    await axios.post(`http://${IP}:4000/usuarios/usuario`, 
     {
       username: user.username
     },
@@ -265,8 +302,8 @@ const Home = () => {
       </View>
 
       <View style={styles.container}>
-        <ScrollView>
-          <View style={{ flexDirection: "row", padding: 10 }}>{/*EMPIEZA LA PUBLICACION*/}
+        {/* <ScrollView>
+          <View style={{ flexDirection: "row", padding: 10 }}>EMPIEZA LA PUBLICACION
             <Image style={styles.profilePic} source={{ uri: `${usuario.profilePicture}` }} />
             <View style={{ flexDirection: "column" }}>
               <View style={{ flexDirection: "row" }}>
@@ -304,8 +341,18 @@ const Home = () => {
           </View>
           <Text style={{ color: "#fff", marginLeft: 17, marginTop: 10, fontSize: 16 }}>{publicacion.description}</Text>
           <Text style={{ justifyContent: "flex-start", color: "#fff", marginTop: 10, marginLeft: 15 }}>{usuario.desc}</Text>
-          <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>{/*TERMINA LA PUBLICACION*/}
-        </ScrollView>
+          <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>TERMINA LA PUBLICACION
+        </ScrollView> */}
+        <FlatList
+            data={publicaciones}
+            key={(item) => item.id}
+            renderItem={ ({item}) =>
+            <>
+                {/* <Text>{usuarios[].name}</Text> */}
+                <Text>{item.name}</Text>
+            </>
+            }
+          />
       </View>
     </>
   );
