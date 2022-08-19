@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useState } from "react";
 import { Linking, StyleSheet, Text, View, Button, Image, StatusBar, TextInput, ScrollView} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -6,23 +6,32 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import "../img/ejemplo.jpg";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
+import TokenContext from "../context/AuthContext";
+import UserContext from "../context/UserContext";
 
 const NewPublication= props => {
   
-  const IP = "192.168.0.56"; 
+  const IP = "10.152.2.111"; 
   const [name, setName] = useState([]);
   const [url, setUrl] = useState([]);
-  const [fkUser, setfkUser] = useState([]);
   const [description, setDescription] = useState([]);
-
-
+  const { token } = useContext(TokenContext);
+  const {user} = useContext(UserContext);
+  const [data, setData] = useState([])
   const [publication, setPublication] = useState([]);
 
+  
   useEffect(() => {
-    subirPublicacion(publication);
+    const traerDatos= async ()=>{
+      await getDataUser(user);
+      await subirPublicacion(publication);
+    }
+    traerDatos();
   },[publication])
 
-  console.log(publication);
+  console.log('esta es la publicacion: ', publication);
+  console.log('estes es el user: ', user)
+  console.log('estos son los datos: ', data)
 
   const subirPublicacion = async (publication)=>{
     const res = await axios.post
@@ -31,12 +40,30 @@ const NewPublication= props => {
       publication,
       {
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${token}`
         }
       }     
     );
+    alert('publicacion subida');
   }
 
+  const getDataUser = async (user)=>{
+    const res = await axios.post
+    (
+      `http://${IP}:4000/usuarios/usuario`,
+      user,
+      {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+      }     
+    ).then(response => {
+      setData(response.data)
+    },error =>{
+      console.log(error)
+    });
+  }
   
 
   return (
@@ -62,14 +89,12 @@ const NewPublication= props => {
          onChangeText={(value) => setName(value)} ></TextInput>
         <TextInput style={styles.input} placeholder="URL"
           onChangeText={(value) => setUrl(value)}></TextInput>
-        <TextInput style={styles.input} placeholder="User"
-          onChangeText={(value) => setfkUser(value)}></TextInput>
         <TextInput style={styles.input} placeholder="Description"
         onChangeText={(value) => setDescription(value)}></TextInput>
         <Button style={styles.boton} title="Submit" color={"#9D2932"} 
         onPress={() => setPublication({
                                       name:name,
-                                      fkUser:fkUser,
+                                      fkUser:data.Id,
                                       image:url,
                                       description: description})}
         borderRadius={30}/>

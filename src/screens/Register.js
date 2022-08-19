@@ -5,7 +5,7 @@ import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const img = "../img/LogIn.png";
-const IP = "192.168.0.56"; 
+const IP = "10.152.2.111"; 
 
 const Register = ({navigation}) => {
 
@@ -27,7 +27,7 @@ const Register = ({navigation}) => {
         return alert('los campos username, password, mail y premium son obilgatorios, completelos')
       } else{
         console.log('holaaaa')
-        setUser({
+        const body = {
           username: username,
           password: password,
           name: name,
@@ -37,17 +37,19 @@ const Register = ({navigation}) => {
           description: description,
           premium: premium,
           occupation: occupation
-        });
-        console.log(user)
-        register()
+        }
+        setUser(body);
+        console.log('este es el user: ',user)
+        await register(body)
       }
     }
 
-    const register = async ()=>{
+    const register = async (body)=>{
+      console.log('este',body);
       const res = await axios.post
       (
-        `http://10.144.1.13:4000/usuarios/register`,
-        user,
+        `http://${IP}:4000/usuarios/register`,
+        body,
         {
           headers: {
               'Content-Type': 'application/json'

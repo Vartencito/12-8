@@ -6,7 +6,7 @@ import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import { useNavigation } from "@react-navigation/native";
 
-const IP = "192.168.0.56";
+const IP = "10.152.2.111";
 
 const Home = () => {
 
@@ -14,11 +14,6 @@ const Home = () => {
   const { user } = useContext(UserContext);
   const [publicacion, setPublicacion] = useState([]);
   const [publicaciones, setPublicaciones] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
-  const [usuario, setUsuario] = useState([]);
-  const [cantLikes, setCantLikes] = useState([]);
-  const [cantDislikes, setCantDislikes] = useState([]);
-  const [comentarios, setComentarios] = useState([]);
   const [likesFromUser, setLikesFromUser] = useState([]);
   const [dislikesFromUser, setDislikesFromuser] = useState([]);
   const [logedUser, setLogedUser] = useState([]);
@@ -28,7 +23,7 @@ const Home = () => {
 
   useEffect(() => {
     const traerData = async () => {
-      await obtenerUsuario();
+      // await obtenerUsuario();
       await obtenerLikesDelUser(user);
       await obtenerDislikesDelUser(user);
       await getDataFromLogedUser(user);
@@ -172,7 +167,8 @@ const Home = () => {
     }
   }
 
-  const getDataFromLogedUser = async (user) => {
+  const getDataFromLogedUser = async () => {
+    console.log('a', user);
     await axios.post(`http://${IP}:4000/usuarios/usuario`,
       {
         username: user.username
@@ -183,6 +179,7 @@ const Home = () => {
         }
       })
       .then(res => {
+        console.log('res.data', res);
         setLogedUser(res.data)
       })
       .catch(err => console.log(err));
@@ -313,6 +310,7 @@ const Home = () => {
   }
 
   const insertLike = async (data) =>{
+    console.log(data);
     const res = await axios.post(`http://${IP}:4000/likesOrDislikes/likes`,
       data,
       {
@@ -386,6 +384,8 @@ const Home = () => {
     await getAllDataFromPublication();
   }
 
+  console.log('estos son los datos: ', allDataPublications);
+
   return (
     <>
       <View style={styles.cuadrado}>
@@ -444,7 +444,7 @@ const Home = () => {
           renderItem={({ item }) =>
             <>
               <View style={{ flexDirection: "row", padding: 10 }}>
-                <Image style={styles.profilePic} source={{ uri: `${item.profilePicture}` }} />
+                <Image style={styles.profilePic} source={item.profilePicture ? {uri: `${item.profilePicture}`}: require('../img/User.png')} />
                 <View style={{ flexDirection: "column" }}>
                   <View style={{ flexDirection: "row" }}>
                     <Text style={styles.username}> {item.Username}</Text>
@@ -456,7 +456,7 @@ const Home = () => {
                   </View>
                 </View>
               </View>
-              <TouchableOpacity onPress={() => navigation.navigate('ImgDetail')}>
+              <TouchableOpacity onPress={() => navigation.navigate('ImgDetail',{foto: item.image})}>
                 <Image style={styles.picture} source={{ uri: item.image }}></Image>
               </TouchableOpacity>
               <View style={styles.likes}>
@@ -468,13 +468,16 @@ const Home = () => {
                         fkPublication: item.Id
                       }
                       if (compararLikes(item, likesFromUser)) {
+                        console.log('estos en el primer if');
                         await deleteLike(data);
                       }
                       else {
                         if (compararLikes(item, dislikesFromUser)) {
+                          console.log('estos en el segudno if');
                           await updateToLike(data);
                         }
                         else {
+                          console.log('estoy en el primer else');
                           await insertLike(data);
                         }
                       }

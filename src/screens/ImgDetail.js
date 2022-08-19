@@ -3,8 +3,10 @@ import { StyleSheet, View, Image} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 
-const IP = "192.168.0.56"; 
-const ImgDetail = props => {
+const IP = "10.152.2.111"; 
+const ImgDetail = foto => {
+
+  console.log('foto: ',foto)
 
     return (
       <>
@@ -20,7 +22,7 @@ const ImgDetail = props => {
             bindToBorders={true}
             style={styles.zoomableView}
           >
-        <Image style={styles.img} source={{uri:"https://pbs.twimg.com/media/EtMyremWQAEcl08.jpg"}}/>
+        <Image style={styles.img} source={{uri: `${foto.route.params.foto}`}}/>
         {/* <Image source={{uri:`${usuario.profilePicture}`}}/> */}
         </ReactNativeZoomableView>
         <View style={{flexDirection:"row", marginLeft: "60%"}}>
@@ -44,6 +46,6 @@ const ImgDetail = props => {
     },
     img:{
         width: 500,
-        height: 400
+        height: "100%"
     }
   });

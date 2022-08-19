@@ -9,7 +9,7 @@ import { useMemo } from "react";
 
 
 const img = "../img/LogIn.png";
-const IP = "192.168.0.56"; 
+const IP = "10.152.2.111"; 
 
 const LogIn = ({navigation})=> {
 
@@ -19,10 +19,15 @@ const LogIn = ({navigation})=> {
  const [contraseña, setContraseña] = useState('');
 
 const getToken = async (user)=>{
+  const body = {
+    username: username,
+    password: contraseña
+  }
+  setUser(body);
   const res = await axios.post
   (
     `http://${IP}:4000/usuarios/login`,
-    user,
+    body,
     {
       headers: {
           'Content-Type': 'application/json'
@@ -54,7 +59,7 @@ const getToken = async (user)=>{
         />
         </View>
         <Pressable style={styles.button} title="Log in" borderRadius={30}
-         onPress={() => {setUser({username:username, password: contraseña}); console.log(user);getToken(user)}}
+         onPress={() => {console.log(user);getToken(user)}}
         >
           <Text style={{color: '#733A26', fontWeight: 'bold'}}>
             Log In
