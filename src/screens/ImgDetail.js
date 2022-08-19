@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, View, Image} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 
-
-const IP = "192.168.0.130"; 
+const IP = "192.168.0.56"; 
 const ImgDetail = props => {
 
     return (
@@ -11,10 +11,18 @@ const ImgDetail = props => {
         <View style={{backgroundColor: "#6e0a03" }}>
         </View>
         <View style={styles.container}>
-        
+        <ReactNativeZoomableView
+            zoomEnabled={true}
+            maxZoom={1.5}
+            minZoom={1}
+            zoomStep={0.25}
+            initialZoom={0.9}
+            bindToBorders={true}
+            style={styles.zoomableView}
+          >
         <Image style={styles.img} source={{uri:"https://pbs.twimg.com/media/EtMyremWQAEcl08.jpg"}}/>
         {/* <Image source={{uri:`${usuario.profilePicture}`}}/> */}
-        
+        </ReactNativeZoomableView>
         <View style={{flexDirection:"row", marginLeft: "60%"}}>
         
           <Ionicons name="heart" color="#fff" size={50}/>
@@ -35,7 +43,7 @@ const ImgDetail = props => {
       justifyContent: "center",
     },
     img:{
-        width: 400,
+        width: 500,
         height: 400
     }
   });

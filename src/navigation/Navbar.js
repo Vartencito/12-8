@@ -10,7 +10,7 @@ import ImgDetail from "../screens/ImgDetail";
 import LogIn from '../screens/LogIn';
 import Register from '../screens/Register';
 import PictureStack from "../stack/PictureStack";
-
+import PublicationStack from "../stack/PublicationStack"
 const Tab = createBottomTabNavigator();
 
 const Navbar = () => {
@@ -34,7 +34,7 @@ const Navbar = () => {
           else if (rn === "PictureStack") {
             iconName = focused ? "home" : "home";
           }
-          else if (rn === "Profile") {
+          else if (rn === "PublicationStack") {
             iconName = focused ? "person" : "person";
           }
        
@@ -57,7 +57,7 @@ const Navbar = () => {
       }}
     >
       <Tab.Screen name="PictureStack" component={PictureStack} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="PublicationStack" component={PublicationStack} />
       <Tab.Screen name="NewPub" component={NewPublication} />
     </Tab.Navigator>
 

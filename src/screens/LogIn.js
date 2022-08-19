@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from "react";
-import { StyleSheet, Text, View, Pressable, TextInput, ImageBackground,ScrollView } from "react-native";
+import { StyleSheet, Text, View, Pressable, TextInput, ImageBackground,ScrollView, TouchableOpacity } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
@@ -9,7 +9,7 @@ import { useMemo } from "react";
 
 
 const img = "../img/LogIn.png";
-const IP = "192.168.0.130"; 
+const IP = "192.168.0.56"; 
 
 const LogIn = ({navigation})=> {
 
@@ -60,14 +60,11 @@ const getToken = async (user)=>{
             Log In
           </Text>
         </Pressable>
-            
-        <Pressable 
-          style={styles.button}
-          onPress={()=>navigation.navigate('Register')}
-        >
-          <Text>Register</Text>
-        </Pressable>
-
+            <TouchableOpacity 
+             onPress={() => navigation.navigate('Register')}
+            >
+          <Text style={styles.texto}>No tengo cuenta</Text>
+          </TouchableOpacity>
           <View style={{flexDirection:"row", marginTop: 100}}>
             <Ionicons name="logo-facebook" color="#fff" size={70} style={{padding:7}}/>
             <Ionicons name="logo-google" color="#fff" size={70} style={{padding:7, paddingRight:15, marginTop:5 }}/>
@@ -113,6 +110,12 @@ export default LogIn;
       flex: 1,
       justifyContent: "center"
     },
+    texto:{
+      marginTop: "3%",
+      color: "#FFF",
+      fontSize:   20,
+      fontWeight: "bold"
+    }
     
   });
 

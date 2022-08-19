@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from "react";
-import { StyleSheet, Text, View, Pressable, TextInput, ImageBackground, ScrollView} from "react-native";
+import { StyleSheet, Text, View, Pressable, TouchableOpacity ,TextInput, ImageBackground, ScrollView} from "react-native";
 import LogIn from "../img/LogIn.png"
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const img = "../img/LogIn.png";
-const IP = "192.168.0.130"; 
+const IP = "192.168.0.56"; 
 
 const Register = ({navigation}) => {
 
@@ -82,12 +82,12 @@ const Register = ({navigation}) => {
             >
             <Text style={{color: '#733A26', fontWeight: 'bold'}}>Registrarse</Text>
         </Pressable>
-        <Pressable 
-            style={styles.button} title="Log in" borderRadius={30}
-            onPress={()=>navigation.navigate('Login')}
+       
+        <TouchableOpacity 
+             onPress={() => navigation.navigate('Login')}
             >
-            <Text style={{color: '#733A26', fontWeight: 'bold'}}>Sí tengo cuenta</Text>
-        </Pressable>
+          <Text style={styles.texto}>Sí, tengo cuenta</Text>
+          </TouchableOpacity>
 
         </View>
         </ScrollView>
@@ -141,6 +141,12 @@ const Register = ({navigation}) => {
     checkbox: {
       alignSelf: "center",
     },
+    texto:{
+      marginTop: "3%",
+      color: "#FFF",
+      fontSize:   20,
+      fontWeight: "bold"
+    }
     
   });
 

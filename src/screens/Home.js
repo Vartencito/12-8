@@ -6,7 +6,7 @@ import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import { useNavigation } from "@react-navigation/native";
 
-const IP = "192.168.0.130";
+const IP = "192.168.0.56";
 
 const Home = () => {
 

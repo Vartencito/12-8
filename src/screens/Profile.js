@@ -1,5 +1,5 @@
-import React , {useState, useEffect, useContext }from "react";
-import { StyleSheet, Text, View, Button, Image } from "react-native";
+import React, {useState, useEffect, useContext }from "react";
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import UserPFP from "../img/User.png"
@@ -7,9 +7,9 @@ import { ScrollView } from "react-native-web";
 import UserContext from "../context/UserContext";
 import TokenContext from "../context/AuthContext";
 
-const IP = '192.168.0.130';
+const IP = '192.168.0.56';
 
-const Profile = props => {
+const Profile = ({navigation}) => {
 
   const {user} = useContext(UserContext);
   const {token} = useContext(TokenContext)
@@ -68,7 +68,14 @@ const Profile = props => {
       <View style={styles.cuadrado}>
             <Ionicons name="arrow-back" color="#fff" size={35} style={{padding:7}}/>
             <View style={{flexDirection:"row"}}>
+           
+           
+        <TouchableOpacity 
+             onPress={() => navigation.navigate('NewPublication')}
+            >
             <Ionicons name="add" color="#fff" size={35} style={{padding:7, paddingRight:"10%", marginTop:5 }}/>
+           </TouchableOpacity>
+           
             </View>
            </View> 
         <View style={styles.container}>
@@ -107,7 +114,8 @@ const Profile = props => {
     },
     image:{
         width: "45%",
-        height: "25%"
+        height: "25%",
+        borderRadius: 200
     },
     cuadrado:{
       justifyContent: "space-between",
