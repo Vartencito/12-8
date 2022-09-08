@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Alert, TouchableOpacity, FlatList } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Alert, TouchableOpacity, FlatList,  RefreshControl } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import { useNavigation } from "@react-navigation/native";
 
-const IP = "10.152.2.111";
+
+const IP = "10.144.1.13";
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 const Home = () => {
 
@@ -18,9 +22,19 @@ const Home = () => {
   const [dislikesFromUser, setDislikesFromuser] = useState([]);
   const [logedUser, setLogedUser] = useState([]);
   const [allDataPublications, setallDataPublications] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
 
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
+
+  
   const navigation = useNavigation();
 
+  
   useEffect(() => {
     const traerData = async () => {
       // await obtenerUsuario();
@@ -388,6 +402,7 @@ const Home = () => {
 
   return (
     <>
+
       <View style={styles.cuadrado}>
         <Ionicons name="ellipsis-vertical" color="#fff" size={35} style={{ padding: 10 }} />
         <View style={{ flexDirection: "row" }}>
@@ -396,48 +411,20 @@ const Home = () => {
         </View>
       </View>
 
+  <RefreshControl
+ refreshing={refreshing}
+ onRefresh={onRefresh}
+/>
       <View style={styles.container}>
-        {/* <ScrollView>
-          <View style={{ flexDirection: "row", padding: 10 }}>EMPIEZA LA PUBLICACION
-            <Image style={styles.profilePic} source={{ uri: `${usuario.profilePicture}` }} />
-            <View style={{ flexDirection: "column" }}>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={styles.username}> {usuario.username}</Text>
-                <Ionicons name="checkmark-circle" color="#26CBFF" size={25} style={{ marginTop: 8 }} />
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ color: "#fff", margin: 11 }}>{usuario.occupation}</Text>
-                <Text style={styles.follow}> Following </Text>
-              </View>
-            </View>
-          </View>
-          <TouchableOpacity  onPress={() => navigation.navigate('ImgDetail')}>
-          <Image style={styles.picture} source={{ uri: publicacion.image }}></Image>
-          </TouchableOpacity>
-          <View style={styles.likes}>
-            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-              <TouchableWithoutFeedback 
-              onPress={darLike}
-              >
-                <Ionicons name="heart" color={compararLikes(publicacion, likesFromUser) ? '#ED4855' : '#fff'} size={35} />
-              </TouchableWithoutFeedback>
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95 }}>{cantLikes.Likes ? cantLikes.Likes : 0}</Text>
-              <TouchableWithoutFeedback 
-              onPress={darDislike}
-              >
-                <Ionicons name="heart-dislike" color={compararLikes(publicacion, dislikesFromUser) ? '#ED4855' : '#fff'} size={35} />
-              </TouchableWithoutFeedback>
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95 }}>{cantDislikes.Dislikes ? cantDislikes.Dislikes : 0}</Text>
-              <TouchableWithoutFeedback>
-                <Ionicons name="chatbubble-ellipses" color="#fff" size={35} />
-              </TouchableWithoutFeedback>
-              <Text style={{ color: "#fff", marginTop: 10, fontSize: 17, marginRight: 95 }}>{comentarios.length ? comentarios.length : 0}</Text>
-            </View>
-          </View>
-          <Text style={{ color: "#fff", marginLeft: 17, marginTop: 10, fontSize: 16 }}>{publicacion.description}</Text>
-          <Text style={{ justifyContent: "flex-start", color: "#fff", marginTop: 10, marginLeft: 15 }}>{usuario.desc}</Text>
-          <Text style={styles.fecha}>Se creó: {publicacion.created_at}</Text>TERMINA LA PUBLICACION
-        </ScrollView> */}
+      <ScrollView
+      ontentContainerStyle={styles.scrollView}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
+      >
         <FlatList
           data={allDataPublications}
           key={(item) => item.id}
@@ -523,6 +510,7 @@ const Home = () => {
             </>
           }
         />
+      </ScrollView>
       </View>
     </>
   );

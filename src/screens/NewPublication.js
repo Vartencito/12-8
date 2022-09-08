@@ -11,7 +11,7 @@ import UserContext from "../context/UserContext";
 
 const NewPublication= props => {
   
-  const IP = "10.152.2.111"; 
+  const IP = "10.144.1.13"; 
   const [name, setName] = useState([]);
   const [url, setUrl] = useState([]);
   const [description, setDescription] = useState([]);

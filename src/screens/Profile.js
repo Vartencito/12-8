@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity,  RefreshControl } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import UserPFP from "../img/User.png"
@@ -7,7 +7,7 @@ import { ScrollView } from "react-native-web";
 import UserContext from "../context/UserContext";
 import TokenContext from "../context/AuthContext";
 
-const IP = '10.152.2.111';
+const IP = '10.144.1.13';
 
 const Profile = ({ navigation }) => {
 
