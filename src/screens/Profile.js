@@ -7,7 +7,7 @@ import { ScrollView } from "react-native-web";
 import UserContext from "../context/UserContext";
 import TokenContext from "../context/AuthContext";
 
-const IP = '10.144.1.13';
+const IP = '10.152.2.116';
 
 const Profile = ({ navigation }) => {
 

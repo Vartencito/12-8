@@ -9,7 +9,7 @@ import { useMemo } from "react";
 
 
 const img = "../img/LogIn.png";
-const IP = "10.144.1.13"; 
+const IP = "10.152.2.116"; 
 
 const LogIn = ({navigation})=> {
 
@@ -48,7 +48,7 @@ const getToken = async (user)=>{
     return (
       <ImageBackground source={require('../img/LogIn.png')} resizeMode="cover" style={styles.image} >
         <View style={styles.container}>
-        <View style={{paddingBottom: 25}}>
+        <View style={{paddingBottom: "4%"}}>
         <TextInput style={styles.input} placeholder="     User"
               onChangeText={(value) => setUsername(value)}
         />
@@ -65,17 +65,24 @@ const getToken = async (user)=>{
             Log In
           </Text>
         </Pressable>
-            <TouchableOpacity 
+      
+
+        <Text style={styles.texto}>You can log in with:</Text>
+          <View style={{flexDirection:"row", marginTop: "2%"}}>
+            <Ionicons name="logo-facebook" color="#fff" size={70} style={{padding:7}}/>
+            <Ionicons name="logo-google" color="#fff" size={70} style={{padding:7, paddingRight:15}}/>
+            <Ionicons name="logo-apple" color="#fff" size={70} style={{padding:7, paddingRight:15}}/>
+          </View>
+          <View style={{flexDirection: "row"}}>
+          <Text style={styles.texto}>Don't have an accaunt yet?  </Text>
+          <TouchableOpacity style={{marginBottom: "1%"}}
              onPress={() => navigation.navigate('Register')}
             >
-          <Text style={styles.texto}>No tengo cuenta</Text>
+              <Text style={styles.texto2}>Sign in</Text>
           </TouchableOpacity>
-          <View style={{flexDirection:"row", marginTop: 100}}>
-            <Ionicons name="logo-facebook" color="#fff" size={70} style={{padding:7}}/>
-            <Ionicons name="logo-google" color="#fff" size={70} style={{padding:7, paddingRight:15, marginTop:5 }}/>
-            <Ionicons name="logo-apple" color="#fff" size={70} style={{padding:7, paddingRight:15, marginTop:5 }}/>
-          </View>
         </View>
+        </View>
+        
         </ImageBackground>
     );
   }
@@ -108,6 +115,7 @@ export default LogIn;
     backgroundColor: '#F6E2D3',
     height: '15%',
     width: '35%',
+    marginBottom: "2%"
       
     },image: {
       height: '100%',
@@ -118,8 +126,15 @@ export default LogIn;
     texto:{
       marginTop: "3%",
       color: "#FFF",
-      fontSize:   20,
-      fontWeight: "bold"
+      fontSize:   13,
+    },
+    texto2:{
+      marginTop: "20%",
+      color: "#FFF",
+      fontSize:   15,
+      fontWeight: "bold",
+      textDecorationLine: 'underline'
+
     }
     
   });
