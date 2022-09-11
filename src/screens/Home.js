@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, StatusBar, Alert, TouchableOpacity, FlatList,  RefreshControl } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, StatusBar, Alert, TouchableOpacity, FlatList, RefreshControl } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import { useNavigation } from "@react-navigation/native";
 
+const IP = "192.168.0.130";
 
-const IP = "10.152.2.116";
 const wait = (timeout) => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 }
@@ -16,28 +16,21 @@ const Home = () => {
 
   const { token } = useContext(TokenContext);
   const { user } = useContext(UserContext);
-  const [publicacion, setPublicacion] = useState([]);
-  const [publicaciones, setPublicaciones] = useState([]);
   const [likesFromUser, setLikesFromUser] = useState([]);
   const [dislikesFromUser, setDislikesFromuser] = useState([]);
   const [logedUser, setLogedUser] = useState([]);
   const [allDataPublications, setallDataPublications] = useState([]);
   const [refreshing, setRefreshing] = React.useState(false);
 
-
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
-
-  
   const navigation = useNavigation();
 
-  
   useEffect(() => {
     const traerData = async () => {
-      // await obtenerUsuario();
       await obtenerLikesDelUser(user);
       await obtenerDislikesDelUser(user);
       await getDataFromLogedUser(user);
@@ -45,95 +38,6 @@ const Home = () => {
     }
     traerData();
   }, []);
-
-  const obtenerPublicaciones = async () => {
-    await axios.get(`http://${IP}:4000/publicaciones/get`, {
-      headers: {
-        'authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => {
-        setPublicaciones(res.data)
-      })
-      .catch(err => console.log(err));
-  }
-
-  const obtenerUsuarios = async () => {
-    let users = [];
-    for (let i = 0; i < publicaciones.length; i++) {
-      await axios.get(`http://${IP}:4000/usuarios/${publicaciones[i].fkUser}`, {
-        headers: {
-          'authorization': `Bearer ${token}`
-        }
-      }).then(res => {
-        users.push(res.data)
-        setUsuarios(users)
-      })
-        .catch(err => console.log(err));
-    }
-  }
-
-  const obtenerPublicacion = async () => {
-    await axios.get(`http://${IP}:4000/publicaciones/7`, {
-      headers: {
-        'authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => {
-        setPublicacion(res.data)
-      })
-      .catch(err => console.log(err));
-  }
-
-  const obtenerUsuario = async () => {
-    await axios.get(`http://${IP}:4000/usuarios/2`, {
-      headers: {
-        'authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => {
-        setUsuario(res.data)
-      })
-      .catch(err => console.log(err));
-  }
-
-  const obtenerLikes = async () => {
-    await axios.get(`http://${IP}:4000/publicaciones/Likes/7`, {
-      headers: {
-        'authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => {
-        setCantLikes(res.data);
-      })
-      .catch(err => console.log(err));
-  }
-
-  const obtenerDislikes = async () => {
-    await axios.get(`
-    http://${IP}:4000/publicaciones/Disikes/7`, {
-      headers: {
-        'authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => {
-        setCantDislikes(res.data);
-      })
-      .catch(err => console.log(err));
-  }
-
-  const obtenerComentarios = async () => {
-    await axios.get(`
-    http://${IP}:4000/comentarios/publicacion/7`, {
-      headers: {
-        'authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => {
-        setComentarios(res.data);
-      })
-      .catch(err => console.log(err));
-  }
 
   const obtenerLikesDelUser = async (user) => {
     const res = await axios.post
@@ -199,102 +103,6 @@ const Home = () => {
       .catch(err => console.log(err));
   }
 
-  const darLike = async (publicacion) => {
-    const data = {
-      fkUser: logedUser.Id,
-      fkPublication: publicacion.Id
-    }
-    if (compararLikes(publicacion, likesFromUser)) {
-      const res = await axios.delete(`http://${IP}:4000/likesOrDislikes`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `bearer ${token}`,
-            'X-Requested-With': 'XMLHttpRequest'
-          },
-          data
-        })
-      const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-      await actualizar();
-    }
-    else {
-
-      if (compararLikes(publicacion, dislikesFromUser)) {
-        const res = await axios.put(`http://${IP}:4000/likesOrDislikes/likes`,
-          data,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-              'X-Requested-With': 'XMLHttpRequest'
-            }
-          }
-        )
-        const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-        await actualizar();
-      }
-      else {
-        const res = await axios.post(`http://${IP}:4000/likesOrDislikes/likes`,
-          data,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'authorization': `Bearer ${token}`
-            }
-          })
-      }
-      const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-      await actualizar();
-    }
-  }
-
-  const darDislike = async () => {
-    const data = {
-      fkUser: logedUser.Id,
-      fkPublication: publicacion.Id
-    }
-    if (compararLikes(publicacion, dislikesFromUser)) {
-      const res = await axios.delete(`http://${IP}:4000/likesOrDislikes`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `bearer ${token}`
-          },
-          data
-        },
-      )
-      const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-      await actualizar();
-    }
-    else {
-      if (compararLikes(publicacion, likesFromUser)) {
-        const res = await axios.put(`http://${IP}:4000/likesOrDislikes/dislikes`,
-          data,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-              'X-Requested-With': 'XMLHttpRequest'
-            }
-          })
-        const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-        await actualizar();
-      }
-      else {
-        const res = await axios.post(`http://${IP}:4000/likesOrDislikes/dislikes`,
-          data,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'authorization': `Bearer ${token}`
-            }
-          })
-      }
-      const actualizar = async () => obtenerLikes(); obtenerDislikes(); obtenerLikesDelUser(user); obtenerDislikesDelUser(user);
-      await actualizar();
-    }
-  }
-
   const getAllDataFromPublication = async () => {
     await axios.get(`http://${IP}:4000/publicaciones`, {
       headers: {
@@ -308,7 +116,7 @@ const Home = () => {
   }
 
   const updateToLike = async (data) => {
-    console.log('data que me llego: ',data)
+    console.log('data que me llego: ', data)
     await axios.put(`http://${IP}:4000/likesOrDislikes/likes`,
       data,
       {
@@ -323,7 +131,7 @@ const Home = () => {
     await getAllDataFromPublication();
   }
 
-  const insertLike = async (data) =>{
+  const insertLike = async (data) => {
     console.log(data);
     const res = await axios.post(`http://${IP}:4000/likesOrDislikes/likes`,
       data,
@@ -338,7 +146,7 @@ const Home = () => {
     await getAllDataFromPublication();
   }
 
-  const deleteLike = async (data) =>{
+  const deleteLike = async (data) => {
     const res = await axios.delete(`http://${IP}:4000/likesOrDislikes`,
       {
         headers: {
@@ -354,7 +162,7 @@ const Home = () => {
   }
 
   const updateToDislike = async (data) => {
-    console.log('data que me llego: ',data)
+    console.log('data que me llego: ', data)
     await axios.put(`http://${IP}:4000/likesOrDislikes/dislikes`,
       data,
       {
@@ -369,7 +177,7 @@ const Home = () => {
     await getAllDataFromPublication();
   }
 
-  const insertDislike = async (data) =>{
+  const insertDislike = async (data) => {
     const res = await axios.post(`http://${IP}:4000/likesOrDislikes/dislikes`,
       data,
       {
@@ -383,7 +191,7 @@ const Home = () => {
     await getAllDataFromPublication();
   }
 
-  const deleteDislike = async (data) =>{
+  const deleteDislike = async (data) => {
     const res = await axios.delete(`http://${IP}:4000/likesOrDislikes`,
       {
         headers: {
@@ -402,117 +210,101 @@ const Home = () => {
 
   return (
     <>
-
-
-
       <View style={styles.cuadrado}>
         <Ionicons name="ellipsis-vertical" color="#fff" size={35} style={{ padding: "2%" }} />
         <View style={{ flexDirection: "row" }}>
           <Ionicons name="funnel" color="#fff" size={35} style={{ padding: "2%", paddingRight: "5%" }} />
-          <Ionicons name="notifications" color="#fff" size={35} style={{ padding: "2%", paddingRight: "10%"}} />
+          <Ionicons name="notifications" color="#fff" size={35} style={{ padding: "2%", paddingRight: "10%" }} />
         </View>
       </View>
 
-  <RefreshControl
- refreshing={refreshing}
- onRefresh={onRefresh}
-/>
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+      />
       <View style={styles.container}>
-      <ScrollView
-      ontentContainerStyle={styles.scrollView}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
-      }
-      >
-        <FlatList
-          data={allDataPublications}
-          key={(item) => item.id}
-          renderItem={({ item }) =>
-            <>
-              <View style={{ flexDirection: "row", padding: "3%"}}>
-                <Image style={styles.profilePic} source={item.profilePicture ? {uri: `${item.profilePicture}`}: require('../img/User.png')} />
-                <View style={{ flexDirection: "column" }}>
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={styles.username}> {item.Username}</Text>
-                    <Ionicons name="checkmark-circle" color="#26CBFF" size={25} style={{ marginTop: "2%" }} />
-                  </View>
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={{ color: "#fff", marginRight: "5%", marginLeft: "3%" }}>{item.occupation}</Text>
-                    <Text style={styles.follow}> Following </Text>
+          <FlatList
+            data={allDataPublications}
+            key={(item) => item.id}
+            renderItem={({ item }) =>
+              <>
+                <View style={{ flexDirection: "row", padding: "3%" }}>
+                  <Image style={styles.profilePic} source={item.profilePicture ? { uri: `${item.profilePicture}` } : require('../img/User.png')} />
+                  <View style={{ flexDirection: "column" }}>
+                    <View style={{ flexDirection: "row" }}>
+                      <Text style={styles.username}> {item.Username}</Text>
+                      <Ionicons name="checkmark-circle" color="#26CBFF" size={25} style={{ marginTop: "2%" }} />
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                      <Text style={{ color: "#fff", marginRight: "5%", marginLeft: "3%" }}>{item.occupation}</Text>
+                      <Text style={styles.follow}> Following </Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-              <TouchableOpacity onPress={() => navigation.navigate('ImgDetail',{foto: item.image})}>
-                <Image style={styles.picture} source={{ uri: item.image }}></Image>
-              </TouchableOpacity>
-              <View style={styles.likes}>
-                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                  <TouchableWithoutFeedback
-                    onPress={async () => {
-                      const data = {
-                        fkUser: logedUser.Id,
-                        fkPublication: item.Id
-                      }
-                      if (compararLikes(item, likesFromUser)) {
-                        console.log('estos en el primer if');
-                        await deleteLike(data);
-                      }
-                      else {
-                        if (compararLikes(item, dislikesFromUser)) {
-                          console.log('estos en el segudno if');
-                          await updateToLike(data);
+                <TouchableOpacity onPress={() => navigation.navigate('ImgDetail', { foto: item.image })}>
+                  <Image style={styles.picture} source={{ uri: item.image }}></Image>
+                </TouchableOpacity>
+                <View style={styles.likes}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                    <TouchableWithoutFeedback
+                      onPress={async () => {
+                        const data = {
+                          fkUser: logedUser.Id,
+                          fkPublication: item.Id
+                        }
+                        if (compararLikes(item, likesFromUser)) {
+                          await deleteLike(data);
                         }
                         else {
-                          console.log('estoy en el primer else');
-                          await insertLike(data);
+                          if (compararLikes(item, dislikesFromUser)) {
+                            await updateToLike(data);
+                          }
+                          else {
+                            await insertLike(data);
+                          }
                         }
-                      }
-                    }}
-                  >
-                    <Ionicons name="heart" color=
-                      {compararLikes(item, likesFromUser) ? '#ED4855' : '#fff'}
-                      size={35} />
-                  </TouchableWithoutFeedback>
-                  <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.likes ? item.likes : 0}</Text>
-                  <TouchableWithoutFeedback
-                  onPress={async () => {
-                    const data = {
-                      fkUser: logedUser.Id,
-                      fkPublication: item.Id
-                    }
-                    if (compararLikes(item, dislikesFromUser)) {
-                      await deleteDislike(data);
-                    }
-                    else {
-                      if (compararLikes(item, likesFromUser)) {
-                        await updateToDislike(data);
-                      }
-                      else {
-                        await insertDislike(data);
-                      }
-                    }
-                  }}
-                  >
-                    <Ionicons name="heart-dislike" color=
-                      {compararLikes(item, dislikesFromUser) ? '#ED4855' : '#fff'}
-                      size={35} />
-                  </TouchableWithoutFeedback>
-                  <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.dislikes ? item.dislikes : 0}</Text>
-                  <TouchableWithoutFeedback>
-                    <Ionicons name="chatbubble-ellipses" color="#fff" size={35} />
-                  </TouchableWithoutFeedback>
-                  <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.comments ? item.comments : 0}</Text>
+                      }}
+                    >
+                      <Ionicons name="heart" color=
+                        {compararLikes(item, likesFromUser) ? '#ED4855' : '#fff'}
+                        size={35} />
+                    </TouchableWithoutFeedback>
+                    <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.likes ? item.likes : 0}</Text>
+                    <TouchableWithoutFeedback
+                      onPress={async () => {
+                        const data = {
+                          fkUser: logedUser.Id,
+                          fkPublication: item.Id
+                        }
+                        if (compararLikes(item, dislikesFromUser)) {
+                          await deleteDislike(data);
+                        }
+                        else {
+                          if (compararLikes(item, likesFromUser)) {
+                            await updateToDislike(data);
+                          }
+                          else {
+                            await insertDislike(data);
+                          }
+                        }
+                      }}
+                    >
+                      <Ionicons name="heart-dislike" color=
+                        {compararLikes(item, dislikesFromUser) ? '#ED4855' : '#fff'}
+                        size={35} />
+                    </TouchableWithoutFeedback>
+                    <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.dislikes ? item.dislikes : 0}</Text>
+                    <TouchableWithoutFeedback>
+                      <Ionicons name="chatbubble-ellipses" color="#fff" size={35} />
+                    </TouchableWithoutFeedback>
+                    <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.comments ? item.comments : 0}</Text>
+                  </View>
                 </View>
-              </View>
-              <Text style={{ color: "#fff", marginLeft: "4%", marginTop: "2%", fontSize: 16 }}>{item.description}</Text>
-              <Text style={styles.fecha}>Se creó: {item.created_at}</Text>
-            </>
-          }
-        />
-      </ScrollView>
+                <Text style={{ color: "#fff", marginLeft: "4%", marginTop: "2%", fontSize: 16 }}>{item.description}</Text>
+                <Text style={styles.fecha}>Se creó: {item.created_at}</Text>
+              </>
+            }
+          />
       </View>
     </>
   );
@@ -563,7 +355,7 @@ const styles = StyleSheet.create({
   fecha: {
     color: "#fff",
     fontSize: 10,
-    marginLeft:  "4%",
+    marginLeft: "4%",
     fontWeight: "bold"
   },
   follow: {
