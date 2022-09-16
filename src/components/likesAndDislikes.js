@@ -9,7 +9,6 @@ const likesAndDislikes = props => {
       <>   
         <View style={styles.container}>
         <Ionicons name="heart"/>
-        
         </View>
       </>
     );

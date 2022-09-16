@@ -16,7 +16,7 @@ const ImgDetail = foto => {
         <ReactNativeZoomableView
             zoomEnabled={true}
             maxZoom={1.5}
-            minZoom={1}
+            minZoom={0.9}
             zoomStep={0.25}
             initialZoom={0.9}
             bindToBorders={true}

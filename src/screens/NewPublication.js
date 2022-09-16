@@ -13,7 +13,7 @@ const NewPublication = props => {
 
   const IP = "10.152.2.134";
   const [name, setName] = useState([]);
-  const [url, setUrl] = useState([]);
+  // const [url, setUrl] = useState([]);
   const [description, setDescription] = useState([]);
   const { token } = useContext(TokenContext);
   const { user } = useContext(UserContext);
@@ -27,7 +27,7 @@ const NewPublication = props => {
       await getDataUser(user);
     }
     traerDatos();
-    if(imgurImage != null){
+    if (imgurImage != null) {
       const publicacion = {
         name: name,
         image: imgurImage,
@@ -95,21 +95,6 @@ const NewPublication = props => {
     }
   }
 
-  // const handlePublication = async (name, description) => {
-  //   await toImgur(name);
-  //   console.log('imagen q va a la bd: ', imgurImage)
-  //   const publicacion = {
-  //     name: name,
-  //     image: imgurImage,
-  //     fkUser: data.Id,
-  //     description: description
-  //   }
-  //   await subirPublicacion(publicacion)
-  //   console.log('publicacion q va a la bd: ', publicacion)
-  // }
-
-  console.log('imagen actual: ', image);
-
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -133,8 +118,7 @@ const NewPublication = props => {
       </View>
       <View style={styles.container}>
         <ScrollView>
-          <Image style={styles.picturee} source={image ? { uri: `${image}` } : require('../img/User.png')}
-            onPress={() => Linking.openURL('http//:localhost:3000/ImgDetail.js')}></Image>
+          <Image style={styles.picturee} source={image ? { uri: `${image}` } : require('../img/User.png')}/>
           <View style={styles.linea} >
             <Text style={{ marginLeft: 10, color: "#fff" }}>Select a photo ↓</Text>
             <View style={{ flexDirection: "column-reverse" }}>
@@ -145,8 +129,6 @@ const NewPublication = props => {
       <View style={styles.inputContainer}>
         <TextInput style={styles.input} placeholder="Name"
           onChangeText={(value) => setName(value)} ></TextInput>
-        <TextInput style={styles.input} placeholder="URL"
-          onChangeText={(value) => setUrl(value)}></TextInput>
         <TextInput style={styles.input} placeholder="Description"
           onChangeText={(value) => setDescription(value)}></TextInput>
         <Button style={styles.boton} title="Search from gallery" color={"#9D2932"}

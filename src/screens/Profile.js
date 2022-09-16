@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity,  RefreshControl } from "react-native";
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, RefreshControl, ScrollView, Dimensions } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import UserPFP from "../img/User.png"
-import { ScrollView } from "react-native-web";
 import UserContext from "../context/UserContext";
 import TokenContext from "../context/AuthContext";
+// import { ScrollView } from "react-native-web";
 
 const IP = '10.152.2.134';
 
@@ -23,8 +22,6 @@ const Profile = ({ navigation }) => {
   useEffect(() => {
     getDataPublication(user);
   }, [])
-
-
 
   const getDataUser = async (user) => {
     const res = await axios.post
@@ -63,7 +60,8 @@ const Profile = ({ navigation }) => {
   }
 
   console.log(dataPublication);
-
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
   return (
     <>
 
@@ -85,7 +83,7 @@ const Profile = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.container}>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row"}}>
           <Text style={styles.user}> {data.username} </Text>
           <Ionicons name="create" color="#fff" size={35} />
         </View>
@@ -106,6 +104,25 @@ const Profile = ({ navigation }) => {
           </View>
         </View>
         <Ionicons name="grid" color="#160F0A" size={35} style={{ marginTop: "10%" }} />
+        <ScrollView style={{width: windowWidth, backgroundColor: 'red'}}>
+          <View style={[styles.contenedorDePublicaciones, {}]}>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+            <View style={{ backgroundColor: 'blue', height: windowWidth/4, width: windowWidth/4, borderColor: 'black', borderWidth: 1, justifyContent: 'center', alignItems: 'center' }}><Text>publicacion</Text></View>
+          </View>
+        </ScrollView>
       </View>
     </>
   );
@@ -156,6 +173,12 @@ const styles = StyleSheet.create({
   },
   align: {
     textAlign: "center"
+  },
+  contenedorDePublicaciones: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexWrap: "wrap",
+    flexDirection: 'row'
   }
 });
 
