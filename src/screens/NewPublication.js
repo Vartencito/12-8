@@ -7,10 +7,11 @@ import axios from "axios";
 import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 const NewPublication = props => {
 
-  const IP = "192.168.0.130";
+  const IP = "10.152.2.134";
   const [name, setName] = useState([]);
   const [url, setUrl] = useState([]);
   const [description, setDescription] = useState([]);
@@ -19,19 +20,29 @@ const NewPublication = props => {
   const [data, setData] = useState([])
   const [publication, setPublication] = useState([]);
   const [image, setImage] = useState(null);
+  const [imgurImage, setImgurImage] = useState(null);
 
   useEffect(() => {
     const traerDatos = async () => {
       await getDataUser(user);
     }
     traerDatos();
-  }, [publication])
+    if(imgurImage != null){
+      const publicacion = {
+        name: name,
+        image: imgurImage,
+        fkUser: data.Id,
+        description: description
+      }
+      subirPublicacion(publicacion)
+    }
+  }, [publication, imgurImage])
 
-  const subirPublicacion = async (publication) => {
+  const subirPublicacion = async (publicacion) => {
     const res = await axios.post
       (
         `http://${IP}:4000/publicaciones`,
-        publication,
+        publicacion,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -59,23 +70,45 @@ const NewPublication = props => {
       });
   }
 
-  const handlePublication = async (name, url, description) => {
+  const toImgur = async (name) => {
     if (name.length < 1) {
       return alert('los campos nombre y url son obilgatorios, complételos')
     } else {
+      console.log('imagen normal: ', image);
+      const manipResult = await ImageManipulator.manipulateAsync(
+        image,
+        [],
+        { compress: 1, base64: true }
+      );
       const formData = new FormData();
-      formData.append('image', image);
+      formData.append('image', manipResult.base64);
       formData.append('type', 'file');
-      fetch("https://api.imgur.com/3/image",{
+      fetch("https://api.imgur.com/3/image", {
         method: "POST",
         headers: {
           Authorization: "Client-ID 338d028975ccc94"
         },
         Authorization: "5eeae49394cd929e299785c8805bd168fc675280",
         body: formData
-      }).then(response => response.json()).then(response => console.log('esta es la rta: ',response))
+      }).then(response => response.json()).then(response => setImgurImage(response.data.link)
+      )
     }
   }
+
+  // const handlePublication = async (name, description) => {
+  //   await toImgur(name);
+  //   console.log('imagen q va a la bd: ', imgurImage)
+  //   const publicacion = {
+  //     name: name,
+  //     image: imgurImage,
+  //     fkUser: data.Id,
+  //     description: description
+  //   }
+  //   await subirPublicacion(publicacion)
+  //   console.log('publicacion q va a la bd: ', publicacion)
+  // }
+
+  console.log('imagen actual: ', image);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -120,7 +153,7 @@ const NewPublication = props => {
           onPress={pickImage}
           borderRadius={30} />
         <Button style={styles.boton} title="Submit" color={"#9D2932"}
-          onPress={() => handlePublication(name, url, description)}
+          onPress={() => toImgur(name)}
           borderRadius={30} />
       </View>
     </>

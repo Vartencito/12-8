@@ -6,11 +6,7 @@ import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import { useNavigation } from "@react-navigation/native";
 
-const IP = "192.168.0.130";
-
-const wait = (timeout) => {
-  return new Promise(resolve => setTimeout(resolve, timeout));
-}
+const IP = "10.152.2.134";
 
 const Home = () => {
 
@@ -26,6 +22,10 @@ const Home = () => {
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
   }, []);
+
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
 
   const navigation = useNavigation();
 
@@ -223,88 +223,88 @@ const Home = () => {
         onRefresh={onRefresh}
       />
       <View style={styles.container}>
-          <FlatList
-            data={allDataPublications}
-            key={(item) => item.id}
-            renderItem={({ item }) =>
-              <>
-                <View style={{ flexDirection: "row", padding: "3%" }}>
-                  <Image style={styles.profilePic} source={item.profilePicture ? { uri: `${item.profilePicture}` } : require('../img/User.png')} />
-                  <View style={{ flexDirection: "column" }}>
-                    <View style={{ flexDirection: "row" }}>
-                      <Text style={styles.username}> {item.Username}</Text>
-                      <Ionicons name="checkmark-circle" color="#26CBFF" size={25} style={{ marginTop: "2%" }} />
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                      <Text style={{ color: "#fff", marginRight: "5%", marginLeft: "3%" }}>{item.occupation}</Text>
-                      <Text style={styles.follow}> Following </Text>
-                    </View>
+        <FlatList
+          data={allDataPublications}
+          key={(item) => item.id}
+          renderItem={({ item }) =>
+            <>
+              <View style={{ flexDirection: "row", padding: "3%" }}>
+                <Image style={styles.profilePic} source={item.profilePicture ? { uri: `${item.profilePicture}` } : require('../img/User.png')} />
+                <View style={{ flexDirection: "column" }}>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.username}> {item.Username}</Text>
+                    <Ionicons name="checkmark-circle" color="#26CBFF" size={25} style={{ marginTop: "2%" }} />
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={{ color: "#fff", marginRight: "5%", marginLeft: "3%" }}>{item.occupation}</Text>
+                    <Text style={styles.follow}> Following </Text>
                   </View>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate('ImgDetail', { foto: item.image })}>
-                  <Image style={styles.picture} source={{ uri: item.image }}></Image>
-                </TouchableOpacity>
-                <View style={styles.likes}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                    <TouchableWithoutFeedback
-                      onPress={async () => {
-                        const data = {
-                          fkUser: logedUser.Id,
-                          fkPublication: item.Id
-                        }
-                        if (compararLikes(item, likesFromUser)) {
-                          await deleteLike(data);
-                        }
-                        else {
-                          if (compararLikes(item, dislikesFromUser)) {
-                            await updateToLike(data);
-                          }
-                          else {
-                            await insertLike(data);
-                          }
-                        }
-                      }}
-                    >
-                      <Ionicons name="heart" color=
-                        {compararLikes(item, likesFromUser) ? '#ED4855' : '#fff'}
-                        size={35} />
-                    </TouchableWithoutFeedback>
-                    <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.likes ? item.likes : 0}</Text>
-                    <TouchableWithoutFeedback
-                      onPress={async () => {
-                        const data = {
-                          fkUser: logedUser.Id,
-                          fkPublication: item.Id
-                        }
+              </View>
+              <TouchableOpacity onPress={() => navigation.navigate('ImgDetail', { foto: item.image })}>
+                <Image style={styles.picture} source={{ uri: item.image }}></Image>
+              </TouchableOpacity>
+              <View style={styles.likes}>
+                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                  <TouchableWithoutFeedback
+                    onPress={async () => {
+                      const data = {
+                        fkUser: logedUser.Id,
+                        fkPublication: item.Id
+                      }
+                      if (compararLikes(item, likesFromUser)) {
+                        await deleteLike(data);
+                      }
+                      else {
                         if (compararLikes(item, dislikesFromUser)) {
-                          await deleteDislike(data);
+                          await updateToLike(data);
                         }
                         else {
-                          if (compararLikes(item, likesFromUser)) {
-                            await updateToDislike(data);
-                          }
-                          else {
-                            await insertDislike(data);
-                          }
+                          await insertLike(data);
                         }
-                      }}
-                    >
-                      <Ionicons name="heart-dislike" color=
-                        {compararLikes(item, dislikesFromUser) ? '#ED4855' : '#fff'}
-                        size={35} />
-                    </TouchableWithoutFeedback>
-                    <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.dislikes ? item.dislikes : 0}</Text>
-                    <TouchableWithoutFeedback>
-                      <Ionicons name="chatbubble-ellipses" color="#fff" size={35} />
-                    </TouchableWithoutFeedback>
-                    <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.comments ? item.comments : 0}</Text>
-                  </View>
+                      }
+                    }}
+                  >
+                    <Ionicons name="heart" color=
+                      {compararLikes(item, likesFromUser) ? '#ED4855' : '#fff'}
+                      size={35} />
+                  </TouchableWithoutFeedback>
+                  <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.likes ? item.likes : 0}</Text>
+                  <TouchableWithoutFeedback
+                    onPress={async () => {
+                      const data = {
+                        fkUser: logedUser.Id,
+                        fkPublication: item.Id
+                      }
+                      if (compararLikes(item, dislikesFromUser)) {
+                        await deleteDislike(data);
+                      }
+                      else {
+                        if (compararLikes(item, likesFromUser)) {
+                          await updateToDislike(data);
+                        }
+                        else {
+                          await insertDislike(data);
+                        }
+                      }
+                    }}
+                  >
+                    <Ionicons name="heart-dislike" color=
+                      {compararLikes(item, dislikesFromUser) ? '#ED4855' : '#fff'}
+                      size={35} />
+                  </TouchableWithoutFeedback>
+                  <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.dislikes ? item.dislikes : 0}</Text>
+                  <TouchableWithoutFeedback>
+                    <Ionicons name="chatbubble-ellipses" color="#fff" size={35} />
+                  </TouchableWithoutFeedback>
+                  <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.comments ? item.comments : 0}</Text>
                 </View>
-                <Text style={{ color: "#fff", marginLeft: "4%", marginTop: "2%", fontSize: 16 }}>{item.description}</Text>
-                <Text style={styles.fecha}>Se creó: {item.created_at}</Text>
-              </>
-            }
-          />
+              </View>
+              <Text style={{ color: "#fff", marginLeft: "4%", marginTop: "2%", fontSize: 16 }}>{item.description}</Text>
+              <Text style={styles.fecha}>Se creó: {item.created_at}</Text>
+            </>
+          }
+        />
       </View>
     </>
   );

@@ -5,7 +5,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 
-const IP = "192.168.0.130";
+const IP = "10.152.2.134";
 
 const LogIn = ({ navigation }) => {
 
