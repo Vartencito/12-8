@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Pressable, TouchableOpacity, TextInput, ImageBackground, ScrollView } from "react-native";
 import axios from "axios";
 
-const IP = "10.152.2.134";
 
 const Register = ({ navigation }) => {
-
+  
+  const IP = "192.168.0.130";
   const [username, setUsername] = useState([]);
   const [password, setPassword] = useState([]);
   const [name, setName] = useState([]);

@@ -6,26 +6,25 @@ import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import { useNavigation } from "@react-navigation/native";
 
-const IP = "10.152.2.134";
-
 const Home = () => {
 
+  const IP = "192.168.0.130";
   const { token } = useContext(TokenContext);
   const { user } = useContext(UserContext);
   const [likesFromUser, setLikesFromUser] = useState([]);
   const [dislikesFromUser, setDislikesFromuser] = useState([]);
   const [logedUser, setLogedUser] = useState([]);
   const [allDataPublications, setallDataPublications] = useState([]);
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
-  }, []);
+  // const onRefresh = React.useCallback(() => {
+  //   setRefreshing(true);
+  //   wait(2000).then(() => setRefreshing(false));
+  // }, []);
 
-  const wait = (timeout) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-  }
+  // const wait = (timeout) => {
+  //   return new Promise(resolve => setTimeout(resolve, timeout));
+  // }
 
   const navigation = useNavigation();
 
@@ -206,6 +205,14 @@ const Home = () => {
     await getAllDataFromPublication();
   }
 
+  const onRefresh = async () => {
+    await obtenerLikesDelUser(user);
+    await obtenerDislikesDelUser(user);
+    await getDataFromLogedUser(user);
+    await getAllDataFromPublication();
+    setRefreshing(false);
+  }
+
   console.log('estos son los datos: ', allDataPublications);
 
   return (
@@ -226,6 +233,11 @@ const Home = () => {
         <FlatList
           data={allDataPublications}
           key={(item) => item.id}
+          refreshing={refreshing}
+          onRefresh={() => {
+            setRefreshing(true);
+            onRefresh();
+          }}
           renderItem={({ item }) =>
             <>
               <View style={{ flexDirection: "row", padding: "3%" }}>
