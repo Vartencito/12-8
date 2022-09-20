@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
 
-  const IP = "192.168.0.56";
+  const IP = "10.144.1.3";
   const { token } = useContext(TokenContext);
   const { user } = useContext(UserContext);
   const [likesFromUser, setLikesFromUser] = useState([]);
@@ -368,7 +368,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 10,
     marginLeft: "4%",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    marginBottom: "8%"
   },
   follow: {
     fontSize: 18,

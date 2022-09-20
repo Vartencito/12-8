@@ -8,7 +8,7 @@ import PublicationInProfile from "../components/PublicationInProfile";
 
 const Profile = ({ navigation }) => {
 
-  const IP = '192.168.0.56';
+  const IP = '10.144.1.3';
   const { user } = useContext(UserContext);
   const { token } = useContext(TokenContext)
   const [data, setData] = useState([]);

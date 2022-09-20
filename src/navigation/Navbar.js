@@ -11,6 +11,7 @@ import LogIn from '../screens/LogIn';
 import Register from '../screens/Register';
 import PictureStack from "../stack/PictureStack";
 import PublicationStack from "../stack/PublicationStack"
+import Search from "../screens/Search";
 const Tab = createBottomTabNavigator();
 
 const Navbar = () => {
@@ -29,10 +30,10 @@ const Navbar = () => {
           let rn = route.name;
 
           if (rn === "NewPub") {
-            iconName = focused ? "list" : "list-outline";
+            iconName = focused ? "home" : "home";
           }
           else if (rn === "PictureStack") {
-            iconName = focused ? "home" : "home";
+            iconName = focused ? "list" : "list-outline";
           }
           else if (rn === "PublicationStack") {
             iconName = focused ? "person" : "person";
@@ -57,8 +58,8 @@ const Navbar = () => {
       }}
     >
       <Tab.Screen name="PictureStack" component={PictureStack} />
+      <Tab.Screen name="NewPub" component={Search} />
       <Tab.Screen name="PublicationStack" component={PublicationStack} />
-      <Tab.Screen name="NewPub" component={NewPublication} />
     </Tab.Navigator>
 
   )

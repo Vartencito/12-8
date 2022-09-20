@@ -8,10 +8,11 @@ import TokenContext from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { useNavigation } from "@react-navigation/native";
 
 const NewPublication = props => {
 
-  const IP = "192.168.0.56";
+  const IP = "10.144.1.3";
   const [name, setName] = useState([]);
   // const [url, setUrl] = useState([]);
   const [description, setDescription] = useState([]);
@@ -21,6 +22,8 @@ const NewPublication = props => {
   const [publication, setPublication] = useState([]);
   const [image, setImage] = useState(null);
   const [imgurImage, setImgurImage] = useState(null);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const traerDatos = async () => {
@@ -95,6 +98,13 @@ const NewPublication = props => {
     }
   }
 
+
+const Submit = (name) => {
+toImgur(name);
+navigation.navigate('Home')
+}
+
+
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -135,7 +145,8 @@ const NewPublication = props => {
           onPress={pickImage}
           borderRadius={30} />
         <Button style={styles.boton} title="Submit" color={"#9D2932"}
-          onPress={() => toImgur(name)}
+          onPress={() => Submit(name)
+          }
           borderRadius={30} />
       </View>
     </>
