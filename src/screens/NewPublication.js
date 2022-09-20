@@ -11,7 +11,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 
 const NewPublication = props => {
 
-  const IP = "192.168.0.130";
+  const IP = "192.168.0.56";
   const [name, setName] = useState([]);
   // const [url, setUrl] = useState([]);
   const [description, setDescription] = useState([]);

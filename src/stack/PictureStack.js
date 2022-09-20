@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ImgDetail from '../screens/ImgDetail';
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
+import Comments from '../screens/Comments';
 
 
 const PictureStack = () => {
@@ -15,6 +16,7 @@ const PictureStack = () => {
                 <Stack.Screen name='Home' component={Home} options={{headerShown: false}}/>                
                 <Stack.Screen name='ImgDetail' component={ImgDetail} options={{headerTitle: ""}}/>
                 <Stack.Screen name='Profile' component={Profile} options={{headerTitle: ""}}/>
+                <Stack.Screen name='Comments' component={Comments} options={{headerTitle: ""}}/>
             </Stack.Navigator> 
     );
 }

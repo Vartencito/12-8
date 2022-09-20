@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
 
-  const IP = "192.168.0.130";
+  const IP = "192.168.0.56";
   const { token } = useContext(TokenContext);
   const { user } = useContext(UserContext);
   const [likesFromUser, setLikesFromUser] = useState([]);
@@ -306,7 +306,7 @@ const Home = () => {
                       size={35} />
                   </TouchableWithoutFeedback>
                   <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.dislikes ? item.dislikes : 0}</Text>
-                  <TouchableWithoutFeedback>
+                  <TouchableWithoutFeedback onPress={() => navigation.navigate('Comments')}>
                     <Ionicons name="chatbubble-ellipses" color="#fff" size={35} />
                   </TouchableWithoutFeedback>
                   <Text style={{ color: "#fff", marginTop: "2%", fontSize: 17, marginRight: "20%" }}>{item.comments ? item.comments : 0}</Text>
