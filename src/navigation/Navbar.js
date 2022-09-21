@@ -32,10 +32,10 @@ const Navbar = () => {
           if (rn === "NewPub") {
             iconName = focused ? "home" : "home";
           }
-          else if (rn === "PictureStack") {
+          else if (rn === "Home") {
             iconName = focused ? "list" : "list-outline";
           }
-          else if (rn === "PublicationStack") {
+          else if (rn === "Profile") {
             iconName = focused ? "person" : "person";
           }
        
@@ -57,9 +57,9 @@ const Navbar = () => {
         }
       }}
     >
-      <Tab.Screen name="PictureStack" component={PictureStack} />
+      <Tab.Screen name="Home" component={PictureStack} />
       <Tab.Screen name="NewPub" component={Search} />
-      <Tab.Screen name="PublicationStack" component={PublicationStack} />
+      <Tab.Screen name="Profile" component={PublicationStack} />
     </Tab.Navigator>
 
   )

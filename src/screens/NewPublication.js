@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const NewPublication = props => {
 
-  const IP = "10.144.1.3";
+  const IP = "192.168.0.56";
   const [name, setName] = useState([]);
   // const [url, setUrl] = useState([]);
   const [description, setDescription] = useState([]);

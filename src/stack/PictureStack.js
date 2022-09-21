@@ -14,9 +14,9 @@ const PictureStack = () => {
     return (
             <Stack.Navigator> 
                 <Stack.Screen name='Home' component={Home} options={{headerShown: false}}/>                
+                <Stack.Screen name='Comments' component={Comments} options={{headerTitle: "", headerTintColor: "#000"}}/>
                 <Stack.Screen name='ImgDetail' component={ImgDetail} options={{headerTitle: ""}}/>
                 <Stack.Screen name='Profile' component={Profile} options={{headerTitle: ""}}/>
-                <Stack.Screen name='Comments' component={Comments} options={{headerTitle: ""}}/>
             </Stack.Navigator> 
     );
 }

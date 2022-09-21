@@ -8,7 +8,7 @@ import UserContext from "../context/UserContext";
 
 const LogIn = ({ navigation }) => {
   
-  const IP = "10.144.1.3";
+  const IP = "192.168.0.56";
   const { user, setUser } = useContext(UserContext);
   const { token, setToken } = useContext(TokenContext)
   const [username, setUsername] = useState('');

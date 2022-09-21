@@ -8,7 +8,7 @@ import PublicationInProfile from "../components/PublicationInProfile";
 
 const Profile = ({ navigation }) => {
 
-  const IP = '10.144.1.3';
+  const IP = '192.168.0.56';
   const { user } = useContext(UserContext);
   const { token } = useContext(TokenContext)
   const [data, setData] = useState([]);
@@ -91,21 +91,21 @@ const Profile = ({ navigation }) => {
         <Image source={data.profilePicture ? { uri: data.profilePicture } : require('../img/User.png')} style={styles.image} />
         <Text style={styles.occupation}>{data.occupation}</Text>
         <View style={{ flexDirection: "row", textAlign: "center", marginTop: "5%" }}>
-          <View style={styles.align}>
+          <View style={{alignItems: "center", marginRight: "6%"}}>
             <Text style={styles.numbers}>300</Text>
             <Text style={styles.numbers2}>Followers</Text>
           </View>
-          <View>
+          <View style={{alignItems: "center"}}>
             <Text style={styles.numbers}>300</Text>
             <Text style={styles.numbers2}>Followers</Text>
           </View>
-          <View>
+          <View style={{alignItems: "center", marginLeft: "6%"}}>
             <Text style={styles.numbers}>300</Text>
             <Text style={styles.numbers2}>Followers</Text>
           </View>
-        </View>
+          </View>
         <Ionicons name="grid" color="#160F0A" size={35} style={{ marginTop: "10%" }} />
-        {
+        
           <FlatList
             data={dataPublication}
             numColumns={2}
@@ -120,7 +120,7 @@ const Profile = ({ navigation }) => {
               <PublicationInProfile url={item.image} />
             )}
           />
-        }
+        
       </View>
     </>
   );

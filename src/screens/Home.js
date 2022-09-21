@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
 
-  const IP = "10.144.1.3";
+  const IP = "192.168.0.56";
   const { token } = useContext(TokenContext);
   const { user } = useContext(UserContext);
   const [likesFromUser, setLikesFromUser] = useState([]);
@@ -217,6 +217,7 @@ const Home = () => {
 
   return (
     <>
+ <StatusBar barStyle = "light-content" hidden = {false} backgroundColor = "#80341E" translucent = {true}/>
       <View style={styles.cuadrado}>
         <Ionicons name="ellipsis-vertical" color="#fff" size={35} style={{ padding: "2%" }} />
         <View style={{ flexDirection: "row" }}>

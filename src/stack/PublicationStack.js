@@ -6,6 +6,7 @@ import NewPublication from '../screens/NewPublication';
 import Profile from '../screens/Profile';
 import Home from '../screens/Home';
 import Search from '../screens/Search';
+import Comments from '../screens/Comments';
 
 const PictureStack = () => {
 
