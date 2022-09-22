@@ -22,7 +22,7 @@ const Profile = ({ navigation }) => {
     }
   }, [user]);
 
-  const getDataUser = async (user) => {
+  const getDataUser = async (user) => { //hola polshu!!!!!!!!!!!!!
     const res = await axios.post
       (
         `http://${IP}:4000/usuarios/usuario`,
